@@ -1,7 +1,8 @@
 
-import Product from './pages/product';
+import ManageProduct from './pages/manageProduct';
 import Reports from './pages/report';
 import { Route, Routes } from 'react-router-dom';
+
 
 // import { Box } from "@chakra-ui/react";
 
@@ -13,7 +14,7 @@ function App() {
     <>
       <Routes>
         <Route path='/report' element={<Reports/>}/>
-        <
+        <Route path='/manage-product' element={<ManageProduct/>} />
       </Routes>
 
       
