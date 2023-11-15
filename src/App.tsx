@@ -1,23 +1,29 @@
 
-import ManageProduct from './pages/manageProduct';
 import Reports from './pages/report';
 import { Route, Routes } from 'react-router-dom';
-
-
-// import { Box } from "@chakra-ui/react";
+import AdminPage from './pages/AdminPage';
+import HeaderManageProduct from './components/manageProduct/header';
+import BodyManageProduct from './components/manageProduct/body';
+import FooterManageProduct from './components/manageProduct/footer';
+import HeaderManageCategory from './components/manageCategory/header';
+import BodyManageCategory from './components/manageCategory/body';
+import FooterManageCategory from './components/manageCategory/footer';
+import HeaderUserManagement from './components/userManagement/header';
+import BodyUserManagement from './components/userManagement/body';
+import FooterUserManagement from './components/userManagement/footer';
 
 
 function App() {
-  // const [count, setCount] = useState(0)
 
   return (
     <>
       <Routes>
         <Route path='/report' element={<Reports/>}/>
-        <Route path='/manage-product' element={<ManageProduct/>} />
+        <Route path='/user-management' element={<AdminPage viewHeader={<HeaderUserManagement/>} viewBody={<BodyUserManagement/>} viewFooter={<FooterUserManagement/>}/>} />
+        <Route path='/manage-category'element={<AdminPage viewHeader={<HeaderManageCategory />} viewBody={<BodyManageCategory/>} viewFooter={<FooterManageCategory/>} />} />
+        <Route path='/manage-product' element={<AdminPage viewHeader={<HeaderManageProduct />} viewBody={<BodyManageProduct/>} viewFooter={<FooterManageProduct/>} />} />
       </Routes>
-
-      
+  
     </>
   )
 }
