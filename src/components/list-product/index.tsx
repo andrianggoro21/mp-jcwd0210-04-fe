@@ -7,6 +7,8 @@ import {
   VStack,
   Text,
   Input,
+  Flex,
+  Spacer,
 } from "@chakra-ui/react";
 import { AddIcon } from "@chakra-ui/icons";
 import img from "../../img/sate.jpg";
@@ -14,11 +16,19 @@ import teh from "../../img/es-teh.jpeg";
 
 function ListProduct() {
   return (
-    <Box h={"100%"} bgColor={""}>
+    <Box h={"100%"}>
       <HStack spacing="24px">
         <Box>
           <Box w={"100%"} h={"50px"}>
-            <Input></Input>
+            <Box>
+              <Flex>
+                <VStack>
+                  <Text>Welcome</Text>
+                  <Text>whatever</Text>
+                </VStack>
+                <Input></Input>
+              </Flex>
+            </Box>
           </Box>
           <Box display={"flex"} w={"100%"} h={"80px"}>
             <Button boxShadow="md" variant="outline" mr={2} color={"#FF7940"}>
@@ -38,7 +48,7 @@ function ListProduct() {
             </Button>
           </Box>
           <Box
-            border={"1px"}
+            // border={"1px"}
             borderRadius="1em"
             w="240px"
             h="320px"

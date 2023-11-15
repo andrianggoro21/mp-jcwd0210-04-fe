@@ -80,7 +80,7 @@ function Chart() {
 
   return (
     <Box>
-      <Box border="1px" p={4}>
+      <Box boxShadow="md" borderRadius="1em" p={4}>
         <Flex align="center" justify="space-between" mb={4}>
           <Text fontSize="25px" fontWeight="bold">
             Order Menu
