@@ -1,11 +1,11 @@
 import { Box } from "@chakra-ui/react";
-import { AreaChart } from "../../components/areaChart";
+// import { AreaChart } from "../../components/areaChart";
 
 
 const Reports = () => {
     return (
         <Box>
-            <AreaChart/>
+            {/* <AreaChart/> */}
         </Box>
     )
 }

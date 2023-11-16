@@ -29,7 +29,6 @@ const ModalCreateProduct : React.FC<ModalCreateProductProps> = ({isOpen, onClose
                                                 <Input type='file' w='100%' h='100%' position='absolute' opacity='0'/>
                                                 <IconPhoto color='#838383' width='130px' height='80px'/>
                                             </Box>
-                                            
                                         </Box>
                                     </FormControl>
                                     <FormControl>
