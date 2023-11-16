@@ -90,7 +90,7 @@ const Sidebar = () => {
                   </HStack>
                   {showProductDropdown && (
                   <Box ml="20px" mt="5px" borderRadius="5px" padding="10px" color="#707070" display='flex' flexDirection='column' gap='14px'>
-                      <Link to={""}><Box style={{ borderBottom: activeSubProduct === "product-list" ? "2px solid #FF7940" : "2px solid #FFFFFF", color: activeSubProduct === "product-list" ? "#FF7940" : "#707070"}} onClick={() => handleSubProductClick("product-list")}>
+                      <Link to={"/product-list"}><Box style={{ borderBottom: activeSubProduct === "product-list" ? "2px solid #FF7940" : "2px solid #FFFFFF", color: activeSubProduct === "product-list" ? "#FF7940" : "#707070"}} onClick={() => handleSubProductClick("product-list")}>
                         <Text fontFamily="Nunito" fontSize="16px" fontWeight="500" _hover={{color: 'transparant'}}>Product List</Text>
                         </Box></Link>
                         <Link to={"/manage-product"}><Box style={{ borderBottom: activeSubProduct === "manage-product" ? "2px solid #FF7940" : "2px solid #FFFFFF", color: activeSubProduct === "manage-product" ? "#FF7940" : "#707070"}} onClick={() => handleSubProductClick("manage-product")}>
@@ -116,13 +116,13 @@ const Sidebar = () => {
                   </HStack>
                   {showReportDropdown && (
                   <Box ml="20px" mt="5px" borderRadius="5px" padding="10px" color="#707070" display='flex' flexDirection='column' gap='14px'>
-                      <Link to={""}><Box style={{ borderBottom: activeSubReport === "analytics" ? "2px solid #FF7940" : "2px solid #FFFFFF", color: activeSubReport === "analytics" ? "#FF7940" : "#707070"}} onClick={() => handleSubReportClick("analytics")}>
-                        <Text fontFamily="Nunito" fontSize="16px" fontWeight="500" _hover={{color: 'transparant'}}>Analytics</Text>
+                      <Link to={"/report-statistic"}><Box style={{ borderBottom: activeSubReport === "analytics" ? "2px solid #FF7940" : "2px solid #FFFFFF", color: activeSubReport === "analytics" ? "#FF7940" : "#707070"}} onClick={() => handleSubReportClick("analytics")}>
+                        <Text fontFamily="Nunito" fontSize="16px" fontWeight="500" _hover={{color: 'transparant'}}>Statistic</Text>
                         </Box></Link>
-                        <Link to={""}><Box style={{ borderBottom: activeSubReport === "transactions" ? "2px solid #FF7940" : "2px solid #FFFFFF",  color: activeSubReport === "transactions" ? "#FF7940" : "#707070"}} onClick={() => handleSubReportClick("transactions")}>
+                        <Link to={"/report-transaction"}><Box style={{ borderBottom: activeSubReport === "transactions" ? "2px solid #FF7940" : "2px solid #FFFFFF",  color: activeSubReport === "transactions" ? "#FF7940" : "#707070"}} onClick={() => handleSubReportClick("transactions")}>
                         <Text fontFamily="Nunito" fontSize="16px" fontWeight="500" _hover={{color: 'transparant'}}>Transactions</Text>
                         </Box></Link>
-                        <Link to={""}><Box style={{ borderBottom: activeSubReport === "sales-report" ? "2px solid #FF7940" : "2px solid #FFFFFF",  color: activeSubReport === "sales-report" ? "#FF7940" : "#707070"}} onClick={() => handleSubReportClick("sales-report")}>
+                        <Link to={"/report-cashier"}><Box style={{ borderBottom: activeSubReport === "sales-report" ? "2px solid #FF7940" : "2px solid #FFFFFF",  color: activeSubReport === "sales-report" ? "#FF7940" : "#707070"}} onClick={() => handleSubReportClick("sales-report")}>
                         <Text fontFamily="Nunito" fontSize="16px" fontWeight="500" _hover={{color: 'transparant'}}>Sales Report</Text>
                         </Box></Link>
                   </Box>

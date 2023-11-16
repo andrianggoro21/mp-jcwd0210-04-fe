@@ -95,8 +95,8 @@ const initialChartData: ChartData = {
       fill: true,
       label: 'Dataset 2',
       data: [],
-      borderColor: 'rgb(53, 162, 235)',
-      backgroundColor: 'rgba(53, 162, 235, 0.5)',
+      borderColor: 'rgb(255, 121, 64)',
+      backgroundColor: 'rgb(239, 163, 130, 0.5)',
     },
   ],
 };
@@ -140,8 +140,8 @@ export const AreaChart = () => {
             fill: true,
             label: 'Dataset 2',
             data: prices,
-            borderColor: 'rgb(53, 162, 235)',
-            backgroundColor: 'rgba(53, 162, 235, 0.5)',
+            borderColor: 'rgb(255, 121, 64)',
+            backgroundColor: 'rgb(239, 163, 130, 0.5)',
           },
         ],
       };
@@ -155,5 +155,5 @@ export const AreaChart = () => {
     fetchData();
   }, []);
 
-  return <Line options={options} data={chartData} />;
+  return <Line  options={options} data={chartData} />;
 };

@@ -16,14 +16,14 @@ const ModalCreateProduct : React.FC<ModalCreateProductProps> = ({isOpen, onClose
             <Modal  onClose={onClose} isOpen={isOpen} size='custom' isCentered>
                 <ModalOverlay />
                 <ModalContent w="1050px" h="700px">
-                    <ModalHeader>Modal Title</ModalHeader>
+                    <ModalHeader>Create Product</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody>
                         <Box display='flex' justifyContent='center' flexDirection='column' gap='20px'>
                             <Box display='flex' w='100%' gap='20px'>
                                 <Box w='50%' display='flex' flexDirection='column' gap='20px'>
                                     <FormControl>
-                                        <FormLabel>Product Image</FormLabel>
+                                        <FormLabel color='#696666'>Product Image</FormLabel>
                                         <Box bgColor='#EEEDED' h='265px' display='flex' alignItems='center' justifyContent='center' borderRadius='10px'>
                                             <Box className="dropzone" color="#ffffff" display="flex" alignItems="center" justifyContent="center">
                                                 <Input type='file' w='100%' h='100%' position='absolute' opacity='0'/>
@@ -33,7 +33,7 @@ const ModalCreateProduct : React.FC<ModalCreateProductProps> = ({isOpen, onClose
                                         </Box>
                                     </FormControl>
                                     <FormControl>
-                                        <FormLabel>Status</FormLabel>
+                                        <FormLabel color='#696666'>Status</FormLabel>
                                         <Select bgColor='#EEEDED' placeholder='Select option'>
                                             <option value='option1'>Option 1</option>
                                             <option value='option2'>Option 2</option>
@@ -43,22 +43,22 @@ const ModalCreateProduct : React.FC<ModalCreateProductProps> = ({isOpen, onClose
                                 </Box>
                                 <Box w='50%' display='flex' flexDirection='column' gap='34px'>
                                     <FormControl>
-                                        <FormLabel>Product Name</FormLabel>
+                                        <FormLabel color='#696666'>Product Name</FormLabel>
                                         <Input bgColor='#EEEDED' placeholder='Product name here...'/>
                                     </FormControl>
                                     <FormControl>
-                                        <FormLabel>Price</FormLabel>
+                                        <FormLabel color='#696666'>Price</FormLabel>
                                         <InputGroup>
                                             <InputLeftAddon bgColor='#EEEDED' children='Rp' />
                                             <Input type='tel' bgColor='#EEEDED' placeholder='phone number' />
                                         </InputGroup>
                                     </FormControl>
                                     <FormControl>
-                                        <FormLabel>Stock</FormLabel>
+                                        <FormLabel color='#696666'>Stock</FormLabel>
                                         <Input bgColor='#EEEDED' placeholder='Type stock here...'/>
                                     </FormControl>
                                     <FormControl>
-                                        <FormLabel>Product Category</FormLabel>
+                                        <FormLabel color='#696666'>Product Category</FormLabel>
                                         <Select bgColor='#EEEDED' placeholder='Select option'>
                                             <option value='option1'>Option 1</option>
                                             <option value='option2'>Option 2</option>
@@ -69,7 +69,7 @@ const ModalCreateProduct : React.FC<ModalCreateProductProps> = ({isOpen, onClose
 
                             </Box>
                             <FormControl>
-                                <FormLabel>Product Category</FormLabel>
+                                <FormLabel color='#696666'>Product Category</FormLabel>
                                 <Textarea bgColor='#EEEDED' placeholder='Tell the description of the product here...'/>
                             </FormControl>
                         </Box>
