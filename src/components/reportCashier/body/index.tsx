@@ -26,19 +26,19 @@ const BodyReportCashier = () => {
                         <Stack spacing='1.5' alignItems='center' gap='14px'>
                             <Heading size='md'>Layla bin Nolan</Heading>
                             <Box w='full' display='flex' alignItems='center' justifyContent='space-between'>
-                                <Text textAlign='justify' fontSize='18px'>
-                                    Roasted 
+                                <Text fontSize='18px' fontFamily='Nunito' fontWeight='500' color='#838383' >
+                                    Total Transactions 
                                 </Text>
-                                <Text color='#FF7940' fontSize='18px' fontWeight='600'>
-                                    Rp 35.000
+                                <Text color='#FF7940' fontFamily='Nunito' fontSize='18px' fontWeight='600'>
+                                    100 Transactions
                                 </Text>
                             </Box>
                             <Box w='full' display='flex' alignItems='center' justifyContent='space-between'>
                                 <Text textAlign='justify' fontSize='18px'>
-                                    Roasted 
+                                    Total Products 
                                 </Text>
-                                <Text color='#FF7940' fontSize='18px' fontWeight='600'>
-                                    Rp 35.000
+                                <Text color='#FF7940' fontFamily='Nunito' fontSize='18px' fontWeight='600'>
+                                    1000 Products
                                 </Text>
                             </Box>
                                 

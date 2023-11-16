@@ -1,4 +1,5 @@
 import Reports from './pages/report';
+import { useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import AdminPage from './pages/AdminPage';
 import HeaderManageProduct from './components/manageProduct/header';
@@ -22,17 +23,21 @@ import FooterReportCashier from './components/reportCashier/footer';
 import HeaderStatistic from './components/statistic/header';
 import BodyStatistic from './components/statistic/body';
 import FooterStatistic from './components/statistic/footer';
+import HeaderDashboard from './components/dashboard/header';
+import BodyDashboard from './components/dashboard/body';
+import FooterDashboard from './components/dashboard/footer';
+
 
 
 
 function App() {
-
+ 
   return (
     <>
       <Routes>
-        <Route path='/report' element={<Reports/>}/>
+        <Route path='/' element={<AdminPage viewHeader={<HeaderDashboard/>} viewBody={<BodyDashboard/>}/>} />
         <Route path='/user-management' element={<AdminPage viewHeader={<HeaderUserManagement/>} viewBody={<BodyUserManagement/>} viewFooter={<FooterUserManagement/>}/>} />
-        <Route path='/manage-category'element={<AdminPage viewHeader={<HeaderManageCategory />} viewBody={<BodyManageCategory/>} viewFooter={<FooterManageCategory/>} />} />
+        <Route path='/manage-category'element={<AdminPage viewHeader={<HeaderManageCategory/>} viewBody={<BodyManageCategory />} viewFooter={<FooterManageCategory/>} />} />
         <Route path='/manage-product' element={<AdminPage viewHeader={<HeaderManageProduct />} viewBody={<BodyManageProduct/>} viewFooter={<FooterManageProduct/>} />} />
         <Route path='/product-list' element={<AdminPage viewHeader={<HeaderProductList />} viewBody={<BodyProductList/>} viewFooter={<FooterProductList/>}/>} />
         <Route path='/report-transaction' element={<AdminPage viewHeader={<HeaderReportTransaction />} viewBody={<BodyReportTransaction/>} viewFooter={<FooterReportTransaction/>}/>} />

@@ -10,12 +10,13 @@ import { useFormik } from "formik";
 import { useToast } from '@chakra-ui/react';
 
 
-interface ModalCreateProductProps {
+interface ModalUpdateProductProps {
     isOpen: boolean;
     onClose: () => void;
+    categoryId: (id: number | null) => void;
 }
 
-const ModalCreateCategory : React.FC<ModalCreateProductProps> = ({isOpen, onClose}) => {
+const ModalUpdateCategory : React.FC<ModalUpdateProductProps> = ({isOpen, onClose, categoryId}) => {
     const [image, setImage] = useState <string | null>(null);
     const toast = useToast()
 
@@ -36,7 +37,7 @@ const ModalCreateCategory : React.FC<ModalCreateProductProps> = ({isOpen, onClos
             acceptedFiles.forEach((file) => {
                 formData.append("image", file);
             });
-            const res = await axios.post("http://localhost:8080/category", 
+            const res = await axios.patch(`http://localhost:8080/category/update/${categoryId}`, 
               formData
             );
             // console.log(res?.data?.data);
@@ -64,7 +65,7 @@ const ModalCreateCategory : React.FC<ModalCreateProductProps> = ({isOpen, onClos
                 <ModalOverlay />
                 <form onSubmit={formik.handleSubmit} >
                     <ModalContent w="490px" h="450px">
-                        <ModalHeader>Create Category</ModalHeader>
+                        <ModalHeader>Update Category</ModalHeader>
                         <ModalCloseButton />
                         <ModalBody>
                             <Box w='100%' display='flex' justifyContent='center' alignItems='center' flexDirection='column' gap='20px'>
@@ -103,4 +104,4 @@ const ModalCreateCategory : React.FC<ModalCreateProductProps> = ({isOpen, onClos
     )
 }
 
-export default ModalCreateCategory;
+export default ModalUpdateCategory;

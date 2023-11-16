@@ -59,7 +59,7 @@ const Sidebar = () => {
           {/* menu list */}
           <Box display="flex" flexDirection="column" gap="10px">
             {/* dashboard */}
-              <Link to={""}>
+              <Link to={"/"}>
                   <HStack style={{ color: activeMenu === "dash" ? "#FF7940" : "#707070", backgroundColor: activeMenu === "dash" ? "#FFF7F3" : "transparent"}}
                       onClick={() => handleMenuClick("dash")} w="full" h="56px" gap='18px'>
                       <Box w="5px" h="56px" bgColor="#FF7940" borderTopRightRadius="5px" borderBottomRightRadius="5px" style={{ visibility: activeMenu === "dash" ? "visible" : "hidden" }}/>

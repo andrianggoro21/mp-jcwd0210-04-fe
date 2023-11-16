@@ -1,13 +1,10 @@
 import { Box, Button, Text, Image } from '@chakra-ui/react';
 
-
-const ButtonCategory = () => {
-
-    
-
+const ButtonCategoryDashboard = () => {
     return (
         <Box mb='30px'>
-            <Box display='flex' alignItems='center' gap='36px'>
+            <Text color='#000000' fontFamily="Nunito" fontWeight='700' fontSize='18px'>Categories</Text>
+            <Box display='flex' alignItems='center' gap='36px' mt='20px'>
                 <Button w='100px' h='100px' bgColor='#FFFFFF'>
                     <Box w='100%' display='flex' flexDirection='column' alignItems='center' justifyContent='center'>
                         <Image src='../../../../public/images/allmenu.svg' />
@@ -22,7 +19,7 @@ const ButtonCategory = () => {
                 </Button>
                 <Button w='100px' h='100px' bgColor='#FFFFFF'>
                     <Box w='100%' display='flex' flexDirection='column' alignItems='center' justifyContent='center'>
-                        <Image src='../../../../public/images/dessert.svg' color='#ff0000'/>
+                        <Image src='../../../../public/images/dessert.svg' />
                         <Text color='#B4B4B4'>Dessert</Text>
                     </Box> 
                 </Button>
@@ -55,4 +52,4 @@ const ButtonCategory = () => {
     )
 }
 
-export default ButtonCategory;
+export default ButtonCategoryDashboard;
