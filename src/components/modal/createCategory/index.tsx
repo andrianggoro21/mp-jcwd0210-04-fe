@@ -56,7 +56,7 @@ const ModalCreateCategory : React.FC<ModalCreateProductProps> = ({isOpen, onClos
         onSubmit: (values) => {
             createCategory(values.categoryName)
         },
-      });
+    });
 
     return (
         <Box  w="900px">
@@ -77,7 +77,6 @@ const ModalCreateCategory : React.FC<ModalCreateProductProps> = ({isOpen, onClos
                                                 <Box hidden={image ? true : false}>
                                                  <IconPhoto  color='#838383' width='130px' height='80px'/>
                                                 </Box>
-                                               
                                             </Box> 
                                             {image && <img src={image}  />}     
                                         </Box>

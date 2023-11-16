@@ -8,12 +8,13 @@ import { useFormik } from "formik";
 import { useToast } from '@chakra-ui/react';
 import axios from 'axios';
 
-interface ModalCreateProductProps {
+interface ModalUpdateProductProps {
     isOpen: boolean;
     onClose: () => void;
+    productId: (id: number | null) => void;
 }
 
-const ModalCreateProduct : React.FC<ModalCreateProductProps> = ({isOpen, onClose}) => {
+const ModalUpdateProduct : React.FC<ModalUpdateProductProps> = ({isOpen, onClose, productId}) => {
     const [image, setImage] = useState <string | null>(null);
     const [category, setCategory] = useState([])
     const [status, setStatus] = useState([])
@@ -56,27 +57,31 @@ const ModalCreateProduct : React.FC<ModalCreateProductProps> = ({isOpen, onClose
         },
     });
 
-    const createProduct = async (productName: string, categoryId: string, price: string, stock: string, description: string, statusId: string) => {
+    const updateProduct = async (productName: string, categoryId: string, price: string, stock: string, description: string, statusId: string, acceptedFiles: File[]) => {
         try {
             let formData = new FormData();
-            formData.append("productName", productName);
-            formData.append("categoryId", categoryId);
-            formData.append("price", price);
-            formData.append("stock", stock);
-            formData.append("description", description);
-            formData.append("statusId", statusId);
+            formData.append("productName", productName || "");
+            formData.append("categoryId", categoryId || "");
+            formData.append("price", price || "");
+            formData.append("stock", stock || "");
+            formData.append("description", description || "");
+            formData.append("statusId", statusId || "");
             acceptedFiles.forEach((file) => {
                 formData.append("image", file);
             });
-            const res = await axios.post("http://localhost:8080/product", 
-              formData
+            const res = await axios.patch(`http://localhost:8080/product/update/1`, 
+              formData,  {
+                headers: {
+                  'Content-Type': 'multipart/form-data',
+                }
+                }  
             );
-            // console.log(res?.data?.data);
+            console.log(res?.data?.data);
             toast({ title: res?.data?.message, status: 'success', position: 'top', duration: 4000, isClosable: true})
             setTimeout(() => {onClose()}, 5000);
         } catch (err : any) {
-            // alert(err?.response?.data);
-            toast({ title: err, status: 'error', duration: 4000, isClosable: true})
+            alert(err);
+            // toast({ title: err, status: 'error', duration: 4000, isClosable: true})
         }
     }
 
@@ -91,7 +96,7 @@ const ModalCreateProduct : React.FC<ModalCreateProductProps> = ({isOpen, onClose
         },
     
         onSubmit: (values) => {
-            createProduct(values.productName, values.categoryId, values.price, values.stock, values.description, values.statusId)
+            updateProduct(values.productName, values.categoryId, values.price, values.stock, values.description, values.statusId, acceptedFiles)
         },
     });
 
@@ -101,7 +106,7 @@ const ModalCreateProduct : React.FC<ModalCreateProductProps> = ({isOpen, onClose
                 <ModalOverlay />
                 <form onSubmit={formik.handleSubmit} >
                     <ModalContent w="1050px" h="700px">
-                        <ModalHeader>Create Product</ModalHeader>
+                        <ModalHeader>Update Product</ModalHeader>
                         <ModalCloseButton />
                         <ModalBody>
                             <Box display='flex' justifyContent='center' flexDirection='column' gap='20px'>
@@ -174,4 +179,4 @@ const ModalCreateProduct : React.FC<ModalCreateProductProps> = ({isOpen, onClose
     )
 }
 
-export default ModalCreateProduct;
+export default ModalUpdateProduct;

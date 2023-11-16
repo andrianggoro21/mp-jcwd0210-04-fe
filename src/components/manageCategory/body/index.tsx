@@ -18,9 +18,9 @@ const BodyManageCategory  = () => {
     const getCategoryAll = async () => {
         try {
             const res = await axios.get(`http://localhost:8080/category`);
-            console.log(res?.data?.data);
+            // console.log(res?.data?.data);
             setCategory(res?.data?.data)
-            toast({ title: res?.data?.message, status: 'success', position: 'top', duration: 4000, isClosable: true})
+            // toast({ title: res?.data?.message, status: 'success', position: 'top', duration: 4000, isClosable: true})
         } catch (err : any) {
             // alert(err?.response?.data);
             toast({ title: err, status: 'error', duration: 4000, isClosable: true})

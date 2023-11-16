@@ -10,13 +10,13 @@ import { useFormik } from "formik";
 import { useToast } from '@chakra-ui/react';
 
 
-interface ModalUpdateProductProps {
+interface ModalUpdateCategoryProps {
     isOpen: boolean;
     onClose: () => void;
     categoryId: (id: number | null) => void;
 }
 
-const ModalUpdateCategory : React.FC<ModalUpdateProductProps> = ({isOpen, onClose, categoryId}) => {
+const ModalUpdateCategory : React.FC<ModalUpdateCategoryProps> = ({isOpen, onClose, categoryId}) => {
     const [image, setImage] = useState <string | null>(null);
     const toast = useToast()
 
@@ -30,7 +30,7 @@ const ModalUpdateCategory : React.FC<ModalUpdateProductProps> = ({isOpen, onClos
         },
       });
 
-    const createCategory = async (categoryName: string) => {
+    const updateCategory = async (categoryName: string) => {
         try {
             let formData = new FormData();
             formData.append("categoryName", categoryName);
@@ -55,7 +55,7 @@ const ModalUpdateCategory : React.FC<ModalUpdateProductProps> = ({isOpen, onClos
         },
     
         onSubmit: (values) => {
-            createCategory(values.categoryName)
+            updateCategory(values.categoryName)
         },
       });
 
