@@ -20,7 +20,7 @@ import coffee from "../../img/Coffee.jpg";
 import noncoffee from "../../img/Non-Coffee.jpg";
 import fruit from "../../img/Fruit & Salad.jpg";
 
-function ListProduct() {
+export const ListProduct = (props: any) => {
   return (
     <Box mt={"10px"} w={"100%"}>
       <VStack align={"stretch"}>
@@ -235,12 +235,13 @@ function ListProduct() {
             <Text fontSize={"20px"} right="20px" as="b">
               Sate Ratu
             </Text>
-            <Text>Sate Ratu Enak</Text>
+            <Text>{props.product_name}</Text>
             <HStack>
               <Text fontSize={"20px"} color={"#FF7940"} as={"b"}>
-                Rp.10.000
+                {props.product_price}
               </Text>
               <IconButton
+                type={"submit"}
                 boxShadow="md"
                 top=".5em"
                 color="black"
@@ -251,6 +252,15 @@ function ListProduct() {
                 _hover={{ bg: "transparent" }}
                 icon={<AddIcon />}
                 aria-label="ariaLabel"
+                onClick={() => {
+                  const test = {
+                    id: props.id,
+                    product_name: props.product_name,
+                    product_price: props.product_price,
+                  };
+                  props.setCartPC([test, ...props.cartPC]);
+                  console.log("props", props.cartPC);
+                }}
               />
             </HStack>
           </VStack>
@@ -258,6 +268,4 @@ function ListProduct() {
       </VStack>
     </Box>
   );
-}
-
-export default ListProduct;
+};
