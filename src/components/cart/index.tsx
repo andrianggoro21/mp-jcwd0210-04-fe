@@ -20,9 +20,18 @@ import { FaPlusCircle, FaMinusCircle } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import useCounter from "./useCounter";
 
-const [count, increment, decrement] = useCounter(0);
-
 export default function Chart(props: any) {
+  const [count, increment, decrement] = useCounter(props.qty);
+
+  const plus = () => {
+    increment();
+    props.setTotal(props.total + props.product_price);
+  };
+
+  const minus = () => {
+    decrement();
+    props.setTotal(props.total - props.product_price);
+  };
 
   return (
     <Box boxShadow="md" p={"4"} h={"100vh"} w={"50%"}>
@@ -47,7 +56,7 @@ export default function Chart(props: any) {
           </Box>
           <VStack align={"stretch"} spacing={"0em"}>
             <Text textColor={"black"}>{props.product_name}</Text>
-            <Text color="#FF7940">{`1 X Rp. ${props.product_price}`}</Text>
+            <Text color="#FF7940">{`${count} X Rp. ${props.product_price}`}</Text>
           </VStack>
           <VStack>
             <HStack spacing={"0"}>
@@ -56,18 +65,14 @@ export default function Chart(props: any) {
                 icon={<FaMinusCircle />}
                 variant={"ghost"}
                 size={"md"}
-                onClick={() => {
-                  count > 1 ? decrement() : null;
-                }}
+                onClick={minus}
               />
               <IconButton
                 aria-label="Plus"
                 icon={<FaPlusCircle />}
                 variant={"ghost"}
                 size={"md"}
-                onClick={() => {
-                  count !== 100 ? increment() : null;
-                }}
+                onClick={plus}
               />
               <IconButton
                 aria-label="Delete"
@@ -145,4 +150,3 @@ export default function Chart(props: any) {
     </Box>
   );
 }
-

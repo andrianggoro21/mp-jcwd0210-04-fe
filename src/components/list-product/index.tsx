@@ -2,15 +2,13 @@ import {
   Box,
   HStack,
   Button,
-  IconButton,
   Image,
   VStack,
   Text,
   Input,
   Img,
+  Select,
 } from "@chakra-ui/react";
-import { AddIcon } from "@chakra-ui/icons";
-import img from "../../img/sate.jpg";
 import menu from "../../img/All Menus (1).jpg";
 import main from "../../img/Main Course.jpg";
 import dessert from "../../img/Dessert.jpg";
@@ -19,8 +17,33 @@ import gelato from "../../img/Gelato.jpg";
 import coffee from "../../img/Coffee.jpg";
 import noncoffee from "../../img/Non-Coffee.jpg";
 import fruit from "../../img/Fruit & Salad.jpg";
+import { ProductCard } from "../product_card";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 export const ListProduct = (props: any) => {
+  const [branchId, setBranchId] = useState(1);
+  const [product, setProduct] = useState<any[]>([]);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [sortOrder, setSortOrder] = useState("asc");
+  const [sortField, setSortField] = useState("product_name");
+  const [search, setSearch] = useState("");
+
+  const fetchProduct = async (): Promise<any> => {
+    try {
+      const res = await axios.get(
+       `http://localhost:8000/product?page=${page}&pageSize=${pageSize}&sortOrder=${sortOrder}&sortField=${sortField}&branch_id=${branchId}`
+      );
+      setProduct(res?.data?.result);
+    } catch (err) {
+      throw err;
+    }
+  };
+  useEffect(() => {
+      fetchProduct();
+  }, [page, pageSize, sortOrder, sortField]);
+
   return (
     <Box mt={"10px"} w={"100%"}>
       <VStack align={"stretch"}>
@@ -30,10 +53,36 @@ export const ListProduct = (props: any) => {
             <Text fontSize={"10px"}>Discover whatever you need easily</Text>
           </Box>
           <Input
+            type="text"
             maxW="400px"
             boxShadow="md"
             placeholder="Search Category"
-          ></Input>
+            onChange={(event) => setSearch(event.target.value)}
+          />
+          <Select
+               w={"8em"}
+              size={"sm"}
+              borderRadius={"0.5em"}
+              onChange={(e) => {
+                setSortField("product_name");
+                setSortOrder(e.target.value);
+              }}
+          >
+            <option value={"asc"}>Name A-Z</option>
+            <option value={"desc"}>Name Z-A</option>
+          </Select>
+          <Select 
+              w={"8em"}
+              size={"sm"}
+              borderRadius={"0.5em"}
+              onChange={((e) => {
+                setSortField("product_price");
+                setSortOrder(e.target.value);
+              })}
+          >
+            <option value={"asc"}>Lowest Price</option>
+            <option value={"desc"}>Highest</option>
+          </Select>
         </HStack>
         <HStack mt={"5px"} w={"43em"}>
           <Button
@@ -212,60 +261,29 @@ export const ListProduct = (props: any) => {
               </Text>
             </Box>
           </Button>
-        </HStack>
-        <Box
-          // border={"1px"}
-          borderRadius="1em"
-          w="240px"
-          h="320px"
-          p="2.5em 1.5em"
-          boxShadow="md"
-        >
-          <Box overflow="hidden">
-            <Image
-              // borderRadius={"0.5em"}
-              // border="solid 0.2em grey"
-              objectFit="cover"
-              w="100%"
-              h="180px"
-              src={img}
+          {product
+          .filter((el) => {
+            if (search === "") {
+              return el;
+            } else if (
+              el.product_name.toLowerCase().includes(search.toLowerCase())
+            ) {
+              return el;
+            }
+          })
+          .map((el: any, index: number) => (
+            <ProductCard
+              key={index}
+              {...el}
+              cartPC={props.cartPL}
+              setCartPC={props.setCartPC}
+              total={props.total}
+              setTotal={props.setTotal}
             />
-          </Box>
-          <VStack fontSize="sm" align="flex" spacing="0">
-            <Text fontSize={"20px"} right="20px" as="b">
-              Sate Ratu
-            </Text>
-            <Text>{props.product_name}</Text>
-            <HStack>
-              <Text fontSize={"20px"} color={"#FF7940"} as={"b"}>
-                {props.product_price}
-              </Text>
-              <IconButton
-                type={"submit"}
-                boxShadow="md"
-                top=".5em"
-                color="black"
-                left="80px"
-                fontSize="1.5em"
-                size="xs"
-                bgColor="transparent"
-                _hover={{ bg: "transparent" }}
-                icon={<AddIcon />}
-                aria-label="ariaLabel"
-                onClick={() => {
-                  const test = {
-                    id: props.id,
-                    product_name: props.product_name,
-                    product_price: props.product_price,
-                  };
-                  props.setCartPC([test, ...props.cartPC]);
-                  console.log("props", props.cartPC);
-                }}
-              />
-            </HStack>
-          </VStack>
-        </Box>
+          ))}
+        </HStack>
       </VStack>
     </Box>
   );
 };
+
