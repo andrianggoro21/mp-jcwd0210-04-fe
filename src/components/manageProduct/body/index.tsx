@@ -59,29 +59,31 @@ const BodyManageProduct = ({}) => {
         <Box>
             <TableContainer>
                 <Table size='sm' variant='striped' bgColor='#FFF6F3' >
-                <Thead bgColor='#FF7940' h='40px'>
+                <Thead bgColor='#FF7940' h='40px' >
                     <Tr >
                         <Th ><Checkbox isChecked={selectAll} onChange={() => setSelectAll(!selectAll)}/></Th>
-                        <Th color='#ffffff'>Product Image</Th>
-                        <Th color='#ffffff'>Product Name</Th>
-                        <Th color='#ffffff'>Price</Th>
-                        <Th color='#ffffff'>Stock</Th>
-                        <Th color='#ffffff'>Category</Th>
-                        <Th color='#ffffff'>Description</Th>
-                        <Th color='#ffffff' textAlign='center'>Status</Th>
-                        <Th color='#ffffff' textAlign='center'>Action</Th>
+                        <Th fontSize='16px' color='#ffffff'>Product Image</Th>
+                        <Th fontSize='16px' color='#ffffff'>Product Name</Th>
+                        <Th fontSize='16px' color='#ffffff'>Price</Th>
+                        <Th fontSize='16px' color='#ffffff'>Stock</Th>
+                        <Th fontSize='16px' color='#ffffff'>Category</Th>
+                        <Th fontSize='16px' color='#ffffff'>Description</Th>
+                        <Th fontSize='16px' color='#ffffff' textAlign='center'>Status</Th>
+                        <Th fontSize='16px' color='#ffffff' textAlign='center'>Action</Th>
                     </Tr>
                 </Thead>
-                <Tbody color='#1E1E1E' fontFamily='Nunito' fontWeight='400' fontSize='12px'>
+                <Tbody color='#1E1E1E' fontFamily='Nunito' fontWeight='400' fontSize='20px'>
                     {product?.map((item: any, index) => (
-                        <Tr>
+                        <Tr >
                             <Td><Checkbox isChecked={selectAll}/></Td>
                             <Td><Image w='100px' h='60px' src={`${import.meta.env.VITE_APP_IMAGE_URL}/product/${item?.image}`} /></Td>
-                            <Td >{item?.productName}</Td>
-                            <Td >Rp {item?.price}</Td>
-                            <Td >{item?.stock}</Td>
-                            <Td >{item?.category?.categoryName}</Td>
-                            <Td maxW='150px' maxH='40px' overflow='hidden' textOverflow='ellipsis' whiteSpace='normal' /*overflowY='auto'*/>{item?.description}</Td>
+                            <Td fontSize='16px'>{item?.productName}</Td>
+                            <Td fontSize='16px'>Rp {item?.price}</Td>
+                            <Td fontSize='16px'>{item?.stock}</Td>
+                            <Td fontSize='16px'>{item?.category?.categoryName}</Td>
+                            <Td fontSize='16px'> 
+                                <Box w='160px' h='50px' overflow='hidden' textOverflow='ellipsis' whiteSpace='normal' /*overflowY='auto'*/ >{item?.description}</Box> 
+                            </Td>
                             <Td textAlign='center'><Switch colorScheme='green'/></Td>
                             <Td textAlign='center'><Box display='flex' justifyContent='center' gap='10px'><Button size='sm' w='50px' bgColor='#FF7940' color='#ffffff' onClick={() => { setProductById(item); setProductId(item?.id); onOpen(); }} >Edit</Button> <Button size='sm' w='50px' variant='outline' color='#FF7940' border='1px solid #FF7940'>Delete</Button></Box></Td>
                         </Tr>
