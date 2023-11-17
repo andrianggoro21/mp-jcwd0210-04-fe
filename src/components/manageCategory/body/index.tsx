@@ -7,11 +7,17 @@ import { useState, useEffect } from 'react';
 import { useToast } from '@chakra-ui/react';
 import ModalUpdateCategory from '../../modal/updateCategory';
 
+interface Product {
+    id: number;
+    categoryName: string;
+    image: string;
+  }
 
 const BodyManageCategory  = () => {
     const { isOpen, onOpen, onClose } = useDisclosure()
     const [selectAll, setSelectAll] = useState(false);
     const [category, setCategory] = useState([])
+    const [categoryById, setCategoryById] = useState<Product | null>()
     const [categoryId, setCategoryId] = useState<number | any>()
     const toast = useToast()
 
@@ -31,10 +37,10 @@ const BodyManageCategory  = () => {
         getCategoryAll();
     }, []);
 
-
-    const handelCategoryId = (id: number) => {
-        setCategoryId(id)
-    }
+    const handleModalClose = () => {
+        onClose();
+        getCategoryAll();
+    };
     
     return (
         <Box>
@@ -56,15 +62,15 @@ const BodyManageCategory  = () => {
                             <Td><Image w='100px' h='60px' src={`${import.meta.env.VITE_APP_IMAGE_URL}/category/${item.image }`} /></Td>
                             <Td >{item.categoryName}</Td>
                             <Td textAlign='center'><Switch colorScheme='green'/></Td>
-                            <Td textAlign='center'><Box display='flex' justifyContent='center' gap='10px'><Button size='sm' w='50px' bgColor='#FF7940' color='#ffffff' onClick={() => { onOpen(); handelCategoryId(item.id); }} >Edit</Button> <Button size='sm' w='50px' variant='outline' color='#FF7940' border='1px solid #FF7940'>Delete</Button></Box></Td>
+                            <Td textAlign='center'><Box display='flex' justifyContent='center' gap='10px'><Button size='sm' w='50px' bgColor='#FF7940' color='#ffffff' onClick={() => { setCategoryId(item?.id); setCategoryById(item);  onOpen(); }} >Edit</Button> <Button size='sm' w='50px' variant='outline' color='#FF7940' border='1px solid #FF7940'>Delete</Button></Box></Td>
                         </Tr>
                     ))}
                     
                 </Tbody>
                 </Table>
             </TableContainer>
+            {isOpen && <ModalUpdateCategory isOpen={isOpen} onClose={handleModalClose} categoryId={categoryId} categoryById={categoryById}/>}
             
-            <ModalUpdateCategory isOpen={isOpen} onClose={onClose} categoryId={categoryId}/>
         </Box>
     )
 }

@@ -13,12 +13,16 @@ import { useToast } from '@chakra-ui/react';
 interface ModalUpdateCategoryProps {
     isOpen: boolean;
     onClose: () => void;
-    categoryId: (id: number | null) => void;
+    categoryId: number;
+    categoryById: any;
 }
 
-const ModalUpdateCategory : React.FC<ModalUpdateCategoryProps> = ({isOpen, onClose, categoryId}) => {
+const ModalUpdateCategory : React.FC<ModalUpdateCategoryProps> = ({isOpen, onClose, categoryId, categoryById}) => {
     const [image, setImage] = useState <string | null>(null);
     const toast = useToast()
+    console.log("category", categoryById?.categoryName);
+    console.log("id", categoryId);
+    
 
     const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
         accept: ['image/*'] as any,
@@ -35,14 +39,14 @@ const ModalUpdateCategory : React.FC<ModalUpdateCategoryProps> = ({isOpen, onClo
             let formData = new FormData();
             formData.append("categoryName", categoryName);
             acceptedFiles.forEach((file) => {
-                formData.append("image", file);
+                formData.append("image", file? file : categoryById?.image);
             });
             const res = await axios.patch(`http://localhost:8080/category/update/${categoryId}`, 
               formData
             );
             // console.log(res?.data?.data);
-            toast({ title: res?.data?.message, status: 'success', position: 'top', duration: 4000, isClosable: true})
-            setTimeout(() => {onClose()}, 5000);
+            toast({ title: res?.data?.message, status: 'success', position: 'top', duration: 2000, isClosable: true})
+            setTimeout(() => {onClose()}, 3000);
         } catch (err : any) {
             // alert(err?.response?.data);
             toast({ title: err, status: 'error', duration: 4000, isClosable: true})
@@ -51,13 +55,19 @@ const ModalUpdateCategory : React.FC<ModalUpdateCategoryProps> = ({isOpen, onClo
 
     const formik = useFormik({
         initialValues: {
-            categoryName: "",
+            categoryName: categoryById?.categoryName,
+            image: categoryById?.image,
         },
     
         onSubmit: (values) => {
             updateCategory(values.categoryName)
         },
       });
+
+      const handleResetForm = () => {
+        formik.resetForm();
+        setImage(null)
+     };
 
     return (
         <Box  w="900px">
@@ -76,7 +86,8 @@ const ModalUpdateCategory : React.FC<ModalUpdateCategoryProps> = ({isOpen, onClo
                                             <Box {...getRootProps()} className="dropzone" color="#ffffff" display="flex" alignItems="center" justifyContent="center">
                                                 <Input {...getInputProps()}  size="lg" /*type='file' w='100%' h='100%' position='absolute' opacity='0'*//>
                                                 <Box hidden={image ? true : false}>
-                                                 <IconPhoto  color='#838383' width='130px' height='80px'/>
+                                                    {/* <IconPhoto  color='#838383' width='130px' height='80px'/> */}
+                                                    <img src={`${import.meta.env.VITE_APP_IMAGE_URL}/category/${formik.values.image}`}/>
                                                 </Box>
                                                
                                             </Box> 
@@ -86,13 +97,13 @@ const ModalUpdateCategory : React.FC<ModalUpdateCategoryProps> = ({isOpen, onClo
                                 </Box>
                                 <FormControl>
                                     <FormLabel color='#696666'>Category Name</FormLabel>
-                                    <Input bgColor='#EEEDED' placeholder='Category name here...' name="categoryName" value={formik.values.categoryName} onChange={formik.handleChange}/> 
+                                    <Input bgColor='#EEEDED'  name="categoryName" value={formik.values.categoryName} onChange={formik.handleChange}/> 
                                 </FormControl>
                             </Box>
                         </ModalBody>
                         <ModalFooter display='flex' gap='20px'>
                             <Button w='80px' variant='outline' color='#FF7940' border='1px solid #FF7940' type='submit'>Save</Button>
-                            <Button w='80px' bgColor='#FF7940' color='#ffffff' onClick={onClose}>Cancel</Button>
+                            <Button w='80px' bgColor='#FF7940' color='#ffffff' onClick={handleResetForm}>Cancel</Button>
                         </ModalFooter>
                     </ModalContent>
                 </form>

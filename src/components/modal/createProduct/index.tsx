@@ -46,6 +46,11 @@ const ModalCreateProduct : React.FC<ModalCreateProductProps> = ({isOpen, onClose
         getStatusAll();
     }, []);
 
+    const handleResetForm = () => {
+        formik.resetForm();
+        setImage(null)
+     };
+
     const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
         accept: ['image/*'] as any,
         onDrop: (acceptedFiles) => {
@@ -73,7 +78,7 @@ const ModalCreateProduct : React.FC<ModalCreateProductProps> = ({isOpen, onClose
             );
             // console.log(res?.data?.data);
             toast({ title: res?.data?.message, status: 'success', position: 'top', duration: 4000, isClosable: true})
-            setTimeout(() => {onClose()}, 5000);
+            setTimeout(() => {onClose();  window.location.reload();}, 3000);
         } catch (err : any) {
             // alert(err?.response?.data);
             toast({ title: err, status: 'error', duration: 4000, isClosable: true})
@@ -97,7 +102,7 @@ const ModalCreateProduct : React.FC<ModalCreateProductProps> = ({isOpen, onClose
 
     return (
         <Box  w="900px">
-            <Modal  onClose={onClose} isOpen={isOpen} size='custom' isCentered>
+            <Modal  onClose={() => { onClose(); window.location.reload(); }} isOpen={isOpen} size='custom' isCentered>
                 <ModalOverlay />
                 <form onSubmit={formik.handleSubmit} >
                     <ModalContent w="1050px" h="700px">
@@ -163,7 +168,7 @@ const ModalCreateProduct : React.FC<ModalCreateProductProps> = ({isOpen, onClose
                         </ModalBody>
                         <ModalFooter display='flex' gap='20px'>
                             <Button w='80px' variant='outline' color='#FF7940' border='1px solid #FF7940' type='submit'>Save</Button>
-                            <Button w='80px' bgColor='#FF7940' color='#ffffff' onClick={onClose}>Cancel</Button>
+                            <Button w='80px' bgColor='#FF7940' color='#ffffff' onClick={handleResetForm}>Cancel</Button>
                         </ModalFooter>
                     </ModalContent>
                 </form>

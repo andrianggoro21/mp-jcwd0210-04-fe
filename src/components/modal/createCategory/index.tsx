@@ -41,7 +41,7 @@ const ModalCreateCategory : React.FC<ModalCreateProductProps> = ({isOpen, onClos
             );
             // console.log(res?.data?.data);
             toast({ title: res?.data?.message, status: 'success', position: 'top', duration: 4000, isClosable: true})
-            setTimeout(() => {onClose()}, 5000);
+            setTimeout(() => {onClose();  window.location.reload();}, 3000);
         } catch (err : any) {
             // alert(err?.response?.data);
             toast({ title: err, status: 'error', duration: 4000, isClosable: true})
@@ -60,7 +60,7 @@ const ModalCreateCategory : React.FC<ModalCreateProductProps> = ({isOpen, onClos
 
     return (
         <Box  w="900px">
-            <Modal  onClose={onClose} isOpen={isOpen} size='custom' isCentered>
+            <Modal onClose={() => { onClose(); window.location.reload(); }} isOpen={isOpen} size='custom' isCentered>
                 <ModalOverlay />
                 <form onSubmit={formik.handleSubmit} >
                     <ModalContent w="490px" h="450px">
