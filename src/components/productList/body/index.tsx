@@ -29,9 +29,9 @@ const BodyProductList : React.FC<BodyProductListProps> = ({currentPage, onPageCh
                     page: pageToFetch,
                     pageSize: 5,
                     productName: "padang",
-                    categoryId: 1,
+                    categoryId: null,
                     alphaId: null,
-                    priceId: null,
+                    priceId: 1,
 
                 }
             });
