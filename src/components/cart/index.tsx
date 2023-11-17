@@ -4,34 +4,36 @@ import {
   Text,
   Input,
   Spacer,
-  Image,
+  // Image,
   Button,
   Flex,
   Center,
-  HStack,
-  VStack,
-  IconButton,
+  Grid,
+  // HStack,
+  // VStack,
+  // IconButton,
 } from "@chakra-ui/react";
 import { LiaMoneyBillWaveSolid } from "react-icons/lia";
 import { LuWallet } from "react-icons/lu";
 import { PiBarcodeLight } from "react-icons/pi";
-import img from "../../img/sate.jpg";
-import { FaPlusCircle, FaMinusCircle } from "react-icons/fa";
-import { MdDelete } from "react-icons/md";
-import useCounter from "./useCounter";
+import ProductInCart from "../product-in-cart";
+// import img from "../../img/sate.jpg";
+// import { FaPlusCircle, FaMinusCircle } from "react-icons/fa";
+// import { MdDelete } from "react-icons/md";
+// import useCounter from "./useCounter";
 
 export default function Chart(props: any) {
-  const [count, increment, decrement] = useCounter(props.qty);
+  // const [count, increment, decrement] = useCounter(props.qty);
 
-  const plus = () => {
-    increment();
-    props.setTotal(props.total + props.product_price);
-  };
+  // const plus = () => {
+  //   increment();
+  //   props.setTotal(props.total + props.product_price);
+  // };
 
-  const minus = () => {
-    decrement();
-    props.setTotal(props.total - props.product_price);
-  };
+  // const minus = () => {
+  //   decrement();
+  //   props.setTotal(props.total - props.product_price);
+  // };
 
   return (
     <Box boxShadow="md" p={"4"} h={"100vh"} w={"50%"}>
@@ -49,8 +51,20 @@ export default function Chart(props: any) {
         <FormLabel>Customer Name</FormLabel>
         <Input maxW="300px" boxShadow="md" placeholder="Search Category" />
       </Box>
-      <Box mt={"30px"} border="md">
-        <HStack align={"stretch"}>
+      <Grid gap={"1em"}>
+        {props?.cart?.map((el: any, index: any) => {
+          return (
+            <ProductInCart
+            {...el}
+            key={index}
+            total={props.total}
+            setTotal={props.setTotal}
+            />
+          );
+        })}
+      </Grid>
+      {/* <Box mt={"30px"} border="md">
+        <HStack bgColor={"red"} align={"stretch"}>
           <Box>
             <Image src={img} boxSize={"10em"} h={"75px"} />
           </Box>
@@ -83,7 +97,7 @@ export default function Chart(props: any) {
             </HStack>
           </VStack>
         </HStack>
-      </Box>
+      </Box> */}
       <Box
         maxW="300px"
         mt={"30px"}
@@ -91,16 +105,31 @@ export default function Chart(props: any) {
         borderWidth="1px"
         borderRadius="md"
         boxShadow="md"
+        bgColor={"#F5F5F5"}
       >
         <Box borderBottomWidth="1px" pb="10">
-          <Text>
-            Subtotal : Rp.50.000
-            <br />
-            Pajak 11% : Rp.5.500
-          </Text>
+          <Flex>
+            <Text fontWeight={"500"}>Subtotal :</Text>
+            <Spacer />
+            <Text>{props.total}</Text>
+          </Flex>
+          <Flex>
+            <Text fontWeight={"500"}>Diskon :</Text>
+            <Spacer />
+            <Text>{props.diskon}</Text>
+          </Flex>
+          <Flex>
+            <Text fontWeight={"500"}> Pajak 11% :</Text>
+            <Spacer />
+            <Text>{props.ppn}</Text>
+          </Flex>
         </Box>
         <Box mt="2" borderTopWidth="1px" pt="2" fontWeight="bold">
-          <Text color={"#FF7940"}>Total : Rp.55.500</Text>
+          <Flex>
+            <Text color={"#FF7940"}>Total :</Text>
+            <Spacer />
+            <Text>{props.totalPpn} hallo</Text>
+          </Flex>
         </Box>
       </Box>
       <Box mt="100px" maxW="300px" my={4}>

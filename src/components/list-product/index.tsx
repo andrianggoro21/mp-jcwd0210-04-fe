@@ -4,6 +4,7 @@ import {
   Button,
   Image,
   VStack,
+  Grid,
   Text,
   Input,
   Img,
@@ -32,20 +33,20 @@ export const ListProduct = (props: any) => {
 
   const fetchProduct = async (): Promise<any> => {
     try {
-      const res = await axios.get(
-       `http://localhost:8000/product?page=${page}&pageSize=${pageSize}&sortOrder=${sortOrder}&sortField=${sortField}&branch_id=${branchId}`
-      );
-      setProduct(res?.data?.result);
+      const res = await axios.get(`http://localhost:8080/product`);
+      console.log("Product Data", res.data.data);
+      setProduct(res?.data?.data);
     } catch (err) {
+      console.error("Error Fetching Product Data:", err);
       throw err;
     }
   };
   useEffect(() => {
-      fetchProduct();
-  }, [page, pageSize, sortOrder, sortField]);
+    fetchProduct();
+  }, []);
 
   return (
-    <Box mt={"10px"} w={"100%"}>
+    <Box bgColor={"#F5F5F5"} mt={"10px"} w={"100%"}>
       <VStack align={"stretch"}>
         <HStack>
           <Box w={"270px"} h={"30px"}>
@@ -56,29 +57,34 @@ export const ListProduct = (props: any) => {
             type="text"
             maxW="400px"
             boxShadow="md"
+            bgColor={"#FFFFFF"}
             placeholder="Search Category"
             onChange={(event) => setSearch(event.target.value)}
           />
           <Select
-               w={"8em"}
-              size={"sm"}
-              borderRadius={"0.5em"}
-              onChange={(e) => {
-                setSortField("product_name");
-                setSortOrder(e.target.value);
-              }}
+            w={"8em"}
+            size={"sm"}
+            boxShadow="md"
+            bgColor={"#FFFFFF"}
+            borderRadius={"0.5em"}
+            onChange={(e) => {
+              setSortField("product_name");
+              setSortOrder(e.target.value);
+            }}
           >
             <option value={"asc"}>Name A-Z</option>
             <option value={"desc"}>Name Z-A</option>
           </Select>
-          <Select 
-              w={"8em"}
-              size={"sm"}
-              borderRadius={"0.5em"}
-              onChange={((e) => {
-                setSortField("product_price");
-                setSortOrder(e.target.value);
-              })}
+          <Select
+            w={"8em"}
+            size={"sm"}
+            boxShadow="md"
+            bgColor={"#FFFFFF"}
+            borderRadius={"0.5em"}
+            onChange={(e) => {
+              setSortField("product_price");
+              setSortOrder(e.target.value);
+            }}
           >
             <option value={"asc"}>Lowest Price</option>
             <option value={"desc"}>Highest</option>
@@ -261,17 +267,17 @@ export const ListProduct = (props: any) => {
               </Text>
             </Box>
           </Button>
-          {product
-          .filter((el) => {
-            if (search === "") {
-              return el;
-            } else if (
-              el.product_name.toLowerCase().includes(search.toLowerCase())
-            ) {
-              return el;
-            }
-          })
-          .map((el: any, index: number) => (
+        </HStack>
+        <Grid
+          gap={"1em"}
+          gridTemplateColumns={"repeat(3, 1fr)"}
+          h={"20em"}
+          p={"2em .5em"}
+          w={"300px"}
+          // h={"500px"}
+          className="asrar cantik sekali"
+        >
+          {product.map((el: any, index: number) => (
             <ProductCard
               key={index}
               {...el}
@@ -281,9 +287,8 @@ export const ListProduct = (props: any) => {
               setTotal={props.setTotal}
             />
           ))}
-        </HStack>
+        </Grid>
       </VStack>
     </Box>
   );
 };
-
