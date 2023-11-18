@@ -5,20 +5,22 @@ import { ListProduct } from "../components/list-product";
 import { useState, useEffect } from "react";
 
 export default function Transaction() {
-  const [cart, setCart] = useState([]);
+  const [cart, setCart] = useState([] as any);
   const [total, setTotal] = useState(0);
+  console.log("zzzzzzzzzz", cart);
+  
   const [ppn, setPpn] = useState(0);
   const [totalPpn, setTotalPpn] = useState(0);
   const [diskon, setDiskon] = useState(0);
-  // const [day, setDay] = useState("");
+  const [day, setDay] = useState("");
 
-  // useEffect(() => {
-  //   if (day === "Friday") {
-  //     setDiskon(10000);
-  //   }
-  //   setPpn(total * 0.1);
-  //   setTotalPpn(total + total * 0.1 - diskon);
-  // }, [total, setTotal, ppn, setPpn, day]);
+  useEffect(() => {
+    if (day === "Friday") {
+      setDiskon(10000);
+    }
+    setPpn(total * 0.1);
+    setTotalPpn(total + total * 0.1 - diskon);
+  }, [total, setTotal, ppn, setPpn, day]);
   const handlesPlus = async (id: number, params: any) => {
     const exist = await cart.map((el: any) => {
       if (el.id === Number(id)) {
@@ -31,7 +33,7 @@ export default function Transaction() {
     if (exist.length > 0) {
       alert("Product Sudah Ada");
     } else {
-      // setCart([params, ...cart]);
+      setCart([params, ...cart]);
     }
   };
 
@@ -43,15 +45,16 @@ export default function Transaction() {
         setCart={setCart}
         total={total}
         setTotal={setTotal}
-        handleplus={handlesPlus}
+        handlesplus={handlesPlus}
       />
       <Chart
-        cartPC={cart}
+        cart={cart}
+        setCart={setCart}
         total={total}
         setTotal={setTotal}
         ppn={ppn}
         totalPpn={totalPpn}
-        diskon={diskon}
+        // diskon={diskon}
       />
     </HStack>
     // <Grid templateColumns={"repeat(3, 1fr)"}>

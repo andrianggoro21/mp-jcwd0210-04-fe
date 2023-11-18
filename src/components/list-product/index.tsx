@@ -23,10 +23,10 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 export const ListProduct = (props: any) => {
-  const [branchId, setBranchId] = useState(1);
+  // const [branchId, setBranchId] = useState(1);
   const [product, setProduct] = useState<any[]>([]);
-  const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  // const [page, setPage] = useState(1);
+  // const [pageSize, setPageSize] = useState(10);
   const [sortOrder, setSortOrder] = useState("asc");
   const [sortField, setSortField] = useState("product_name");
   const [search, setSearch] = useState("");
@@ -46,7 +46,7 @@ export const ListProduct = (props: any) => {
   }, []);
 
   return (
-    <Box bgColor={"#F5F5F5"} mt={"10px"} w={"100%"}>
+    <Box bgColor={"#F5F5F5"} mt={"15px"} w={"100%"}>
       <VStack align={"stretch"}>
         <HStack>
           <Box w={"270px"} h={"30px"}>
@@ -54,10 +54,11 @@ export const ListProduct = (props: any) => {
             <Text fontSize={"10px"}>Discover whatever you need easily</Text>
           </Box>
           <Input
-            type="text"
-            maxW="400px"
+            maxW="300px"
+            size={"sm"}
             boxShadow="md"
             bgColor={"#FFFFFF"}
+            borderRadius={"0.5em"}
             placeholder="Search Category"
             onChange={(event) => setSearch(event.target.value)}
           />
@@ -90,7 +91,7 @@ export const ListProduct = (props: any) => {
             <option value={"desc"}>Highest</option>
           </Select>
         </HStack>
-        <HStack mt={"5px"} w={"43em"}>
+        <HStack mt={"5px"} w={"45em"}>
           <Button
             w={"80px"}
             h={"60px"}
@@ -270,21 +271,30 @@ export const ListProduct = (props: any) => {
         </HStack>
         <Grid
           gap={"1em"}
-          gridTemplateColumns={"repeat(3, 1fr)"}
+          gridTemplateColumns={"repeat(5, 3fr)"}
           h={"20em"}
           p={"2em .5em"}
-          w={"300px"}
-          // h={"500px"}
-          className="asrar cantik sekali"
+          w={"200px"}
         >
-          {product.map((el: any, index: number) => (
+          {product
+          .filter((el) => {
+            if (search === "") {
+              return el; 
+            } else if (
+              el.productName.toLowercase().icludes(search.toLowerCase())
+            ) {
+              return el;
+            }
+          })
+          .map((el, index) => (
             <ProductCard
               key={index}
               {...el}
-              cartPC={props.cartPL}
-              setCartPC={props.setCartPC}
+              cart={props.cart}
+              setCart={props.setCart}
               total={props.total}
               setTotal={props.setTotal}
+              handlesPlus={props.handlesPlus}
             />
           ))}
         </Grid>

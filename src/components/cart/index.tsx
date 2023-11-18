@@ -4,7 +4,7 @@ import {
   Text,
   Input,
   Spacer,
-  // Image,
+  Image,
   Button,
   Flex,
   Center,
@@ -13,27 +13,31 @@ import {
   // VStack,
   // IconButton,
 } from "@chakra-ui/react";
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
+} from "@chakra-ui/react";
 import { LiaMoneyBillWaveSolid } from "react-icons/lia";
 import { LuWallet } from "react-icons/lu";
 import { PiBarcodeLight } from "react-icons/pi";
 import ProductInCart from "../product-in-cart";
-// import img from "../../img/sate.jpg";
-// import { FaPlusCircle, FaMinusCircle } from "react-icons/fa";
-// import { MdDelete } from "react-icons/md";
-// import useCounter from "./useCounter";
+import { useState, useEffect } from "react";
+// import Qris from "../../img/Qris.jpg"
 
-export default function Chart(props: any) {
-  // const [count, increment, decrement] = useCounter(props.qty);
 
-  // const plus = () => {
-  //   increment();
-  //   props.setTotal(props.total + props.product_price);
-  // };
-
-  // const minus = () => {
-  //   decrement();
-  //   props.setTotal(props.total - props.product_price);
-  // };
+export default function Cart(props: any) {
+ const [paymentAmount, setPaymentAmount] = useState(0); 
+ const [paymentChange, setPaymentChange] = useState(0);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  useEffect(() => {
+    setPaymentChange(paymentAmount - props.totalPpn);
+  }, [paymentAmount, paymentChange]);
 
   return (
     <Box boxShadow="md" p={"4"} h={"100vh"} w={"50%"}>
@@ -48,56 +52,23 @@ export default function Chart(props: any) {
         </Text>
       </Flex>
       <Box mb={4}>
-        <FormLabel>Customer Name</FormLabel>
+        <FormLabel>Cashier: Asrar Abuchaer</FormLabel>
         <Input maxW="300px" boxShadow="md" placeholder="Search Category" />
       </Box>
       <Grid gap={"1em"}>
         {props?.cart?.map((el: any, index: any) => {
           return (
             <ProductInCart
-            {...el}
-            key={index}
-            total={props.total}
-            setTotal={props.setTotal}
+              {...el}
+              cart={props.cart}
+              setCart={props.setCart}
+              key={index}
+              total={props.total}
+              setTotal={props.setTotal}
             />
           );
         })}
       </Grid>
-      {/* <Box mt={"30px"} border="md">
-        <HStack bgColor={"red"} align={"stretch"}>
-          <Box>
-            <Image src={img} boxSize={"10em"} h={"75px"} />
-          </Box>
-          <VStack align={"stretch"} spacing={"0em"}>
-            <Text textColor={"black"}>{props.product_name}</Text>
-            <Text color="#FF7940">{`${count} X Rp. ${props.product_price}`}</Text>
-          </VStack>
-          <VStack>
-            <HStack spacing={"0"}>
-              <IconButton
-                aria-label="Minus"
-                icon={<FaMinusCircle />}
-                variant={"ghost"}
-                size={"md"}
-                onClick={minus}
-              />
-              <IconButton
-                aria-label="Plus"
-                icon={<FaPlusCircle />}
-                variant={"ghost"}
-                size={"md"}
-                onClick={plus}
-              />
-              <IconButton
-                aria-label="Delete"
-                icon={<MdDelete />}
-                size={"md"}
-                variant={"ghost"}
-              />
-            </HStack>
-          </VStack>
-        </HStack>
-      </Box> */}
       <Box
         maxW="300px"
         mt={"30px"}
@@ -107,16 +78,11 @@ export default function Chart(props: any) {
         boxShadow="md"
         bgColor={"#F5F5F5"}
       >
-        <Box borderBottomWidth="1px" pb="10">
+        <Box>
           <Flex>
             <Text fontWeight={"500"}>Subtotal :</Text>
             <Spacer />
             <Text>{props.total}</Text>
-          </Flex>
-          <Flex>
-            <Text fontWeight={"500"}>Diskon :</Text>
-            <Spacer />
-            <Text>{props.diskon}</Text>
           </Flex>
           <Flex>
             <Text fontWeight={"500"}> Pajak 11% :</Text>
@@ -128,7 +94,7 @@ export default function Chart(props: any) {
           <Flex>
             <Text color={"#FF7940"}>Total :</Text>
             <Spacer />
-            <Text>{props.totalPpn} hallo</Text>
+            <Text>{props.totalPpn}</Text>
           </Flex>
         </Box>
       </Box>
@@ -163,15 +129,43 @@ export default function Chart(props: any) {
         </Center>
       </Box>
       <Center>
+        <Modal isOpen={isOpen} onClose={onClose}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Detail Pembayaran</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              {/* <Lorem count={2} /> */}
+              <Text>Uang Yang Dibayar</Text>
+              <Input />
+              <Text>Total</Text>
+              <Input />
+              <Text>Kembalian</Text>
+              <Input />
+              {/* <Text>Tranfer Bank :</Text>
+              <Text>1. BCA. 0074-7906-XXX A/n Asrar</Text>
+              <Text>2. BRI. 2219-0100-4426-XXX A/n Asrar</Text>
+              <Image src={Qris} /> */}
+            </ModalBody>
+
+            <ModalFooter>
+              <Button colorScheme={"orange"} mr={3} onClick={onClose}>
+                Payment Completed
+              </Button>
+              {/* <Button variant="ghost">Secondary Action</Button> */}
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+
         <Button
           boxShadow="md"
           fontWeight={"bold"}
           color={"#F5F5F5"}
           _hover={{ bgColor: "#FF7940" }}
           bgColor={"#FF7940"}
-          colorScheme="orange"
           borderRadius={"18px"}
           outline={"none"}
+          onClick={onOpen}
         >
           PROCESS PAYMENT
         </Button>
