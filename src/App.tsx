@@ -32,6 +32,7 @@ import FooterDashboard from './components/dashboard/footer';
 
 function App() {
   const [currentPage, setCurrentPage] = useState(1);
+  const [inputSearch, setInputSearch] = useState("")
 
   const handlePageChange = (newPage: number, event?: React.MouseEvent<HTMLButtonElement>) => {
     if (event) {
@@ -39,6 +40,13 @@ function App() {
     }
     setCurrentPage(newPage);
   }
+
+  const handleSearch = (productName: string, event?: React.MouseEvent<HTMLButtonElement>) => {
+    if (event) {
+      event.preventDefault();
+    }
+   setInputSearch(productName)
+  };
   return (
     <>
       <Routes>
@@ -46,7 +54,7 @@ function App() {
         <Route path='/user-management' element={<AdminPage viewHeader={<HeaderUserManagement/>} viewBody={<BodyUserManagement/>} viewFooter={<FooterUserManagement/>}/>} />
         <Route path='/manage-category'element={<AdminPage viewHeader={<HeaderManageCategory/>} viewBody={<BodyManageCategory />} viewFooter={<FooterManageCategory/>} />} />
         <Route path='/manage-product' element={<AdminPage viewHeader={<HeaderManageProduct />} viewBody={<BodyManageProduct/>} viewFooter={<FooterManageProduct/>} />} />
-        <Route path='/product-list' element={<AdminPage viewHeader={<HeaderProductList />} viewBody={<BodyProductList currentPage={currentPage} onPageChange={handlePageChange} />} viewFooter={<FooterProductList currentPage={currentPage} onPageChange={handlePageChange}/>}/>} />
+        <Route path='/product-list' element={<AdminPage viewHeader={<HeaderProductList inputSearch={handleSearch} />} viewBody={<BodyProductList currentPage={currentPage} onPageChange={handlePageChange} inputSearch={inputSearch}/>} viewFooter={<FooterProductList currentPage={currentPage} onPageChange={handlePageChange}/>}/>} />
         <Route path='/report-transaction' element={<AdminPage viewHeader={<HeaderReportTransaction />} viewBody={<BodyReportTransaction/>} viewFooter={<FooterReportTransaction/>}/>} />
         <Route path='/report-cashier' element={<AdminPage viewHeader={<HeaderReportCashier />} viewBody={<BodyReportCashier/>} viewFooter={<FooterReportCashier/>}/>} />
         <Route path='/report-statistic' element={<AdminPage viewHeader={<HeaderStatistic />} viewBody={<BodyStatistic/>} />} />

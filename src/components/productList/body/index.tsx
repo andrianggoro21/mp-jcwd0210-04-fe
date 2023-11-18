@@ -6,36 +6,38 @@ import ButtonCategory from '../buttonCategory';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useToast } from '@chakra-ui/react';
-
-
+import { useFormik } from "formik";
 interface BodyProductListProps {
     currentPage: number;
     onPageChange: (newPage: number) => void;
+    inputSearch: string;
   }
 
-const BodyProductList : React.FC<BodyProductListProps> = ({currentPage, onPageChange}) => {
+const BodyProductList : React.FC<BodyProductListProps> = ({currentPage, onPageChange, inputSearch}) => {
     const [product, setProduct] = useState([])
+    const [categoryChange, setCategoryChange] = useState<number | null>(null)
+    const [alphabet, setAlphabet] = useState<number | undefined>(undefined);
+    const [price, setPrice] = useState<number | undefined>(undefined);
     const toast = useToast()
-    // console.log(currentPage);
+    
     
 
     const getProductAll = async () => {
         try {
+            console.log("alpha", alphabet);
+            console.log("price", price);
             const pageToFetch = Math.max(currentPage, 1);
-            // console.log("cur", pageToFetch);
-            
             const res = await axios.get(`http://localhost:8080/product/pagination`, {
                 params: {
                     page: pageToFetch,
                     pageSize: 5,
-                    productName: "padang",
-                    categoryId: null,
-                    alphaId: null,
-                    priceId: 1,
+                    productName: inputSearch,
+                    categoryId: categoryChange,
+                    alphaId: alphabet,
+                    priceId: price,
 
                 }
             });
-            // console.log(res?.data?.data);
             setProduct(res?.data?.data)
             // toast({ title: res?.data?.message, status: 'success', position: 'top', duration: 4000, isClosable: true})
         } catch (err : any) {
@@ -46,45 +48,70 @@ const BodyProductList : React.FC<BodyProductListProps> = ({currentPage, onPageCh
 
     useEffect(() => {
         getProductAll();
-    }, [onPageChange]);
+    }, [categoryChange, alphabet, price, onPageChange]);
+
+    const handleCategoryChange = (category: number | null, event?: React.MouseEvent<HTMLButtonElement>) => {
+        if (event) {
+          event.preventDefault();
+        }
+       setCategoryChange(category)
+      };
+
+      const handleAlphabetChange = (value: number) => {
+        setAlphabet(value);
+      };
+    
+      const handlePriceChange = (value: number) => {
+        setPrice(value);
+      };
 
     return (
         <Box>
-            <ButtonCategory/>
+            <ButtonCategory onCategoryChange={handleCategoryChange}/>
             <Box display='flex' flexDirection='column'>
                 <Box display='flex' justifyContent='space-between'>
                     <Text color='#000000' fontFamily="Nunito" fontWeight='700' fontSize='20px'>15 Menus</Text>
-                    <Box display='flex' gap='20px'>
-                        <Select bgColor='#ffffff' placeholder='Select option'>
-                            <option value='option1'>A - Z</option>
-                            <option value='option2'>Z - A</option>
-                        </Select>
-                        <Select bgColor='#ffffff' placeholder='Select option'>
-                            <option value='option1'>Lowest Price</option>
-                            <option value='option2'>Highest Price</option>
-                        </Select>
-                    </Box>
+                    {/* <form onSubmit={formik.handleSubmit} > */}
+                        <Box display='flex' gap='20px'>
+                            <Box>
+                                <Select bgColor="#ffffff" placeholder="ALPHABET" name="alphabet" value={alphabet === null ? undefined : alphabet} onChange={(e) => handleAlphabetChange(Number(e.target.value))}>
+                                    <option value={undefined}>None</option>
+                                    <option value={0}>A - Z</option>
+                                    <option value={1}>Z - A</option>
+                                </Select>
+                            </Box>
+                            <Box>
+                                <Select bgColor="#ffffff" placeholder="PRICE" name="price" value={price === null ? undefined : price} onChange={(e) => handlePriceChange(Number(e.target.value))}>
+                                    <option value={undefined}>None</option>
+                                    <option value={0}>Lowest Price</option>
+                                    <option value={1}>Highest Price</option>
+                                </Select>
+                            </Box>
+                            
+                            
+                        </Box>
+                    {/* </form> */}
                 </Box>
                 <Box mt='20px' >
                     <Grid templateColumns='repeat(6, 1fr)' gap={5} overflow='hidden'>
-                        {product?.map((item : any, index) => (
+                        {product?.map((item : any) => (
                             <GridItem>
                                 <Card w='220px' h='300px' padding='0' borderRadius='16px'>
                                     <Box display='flex' alignItems='flex-end' justifyContent='right'>
-                                        <Image  w='100%' borderTopRadius='16px' key={index} src={`${import.meta.env.VITE_APP_IMAGE_URL}/product/${item?.image}`}/>
+                                        <Image  w='100%' borderTopRadius='16px' src={`${import.meta.env.VITE_APP_IMAGE_URL}/product/${item?.image}`}/>
                                         <Box w='35px' h='35px' display='flex' alignItems='center' justifyContent='center' position='absolute' top='38%' left='87%' transform='translate(-50%, -50%)' bgColor='rgba(148, 148, 148, 0.7)' borderRadius='4px'>
                                             <IconPlus color='#ffffff'/>
                                         </Box>
                                     </Box>
                                     <CardBody padding='10px'>
                                         <Stack spacing='4'>
-                                            <Heading size='sm' key={index}>{item?.productName}</Heading>
+                                            <Heading size='sm'>{item?.productName}</Heading>
                                             <Box h='60px' overflow='hidden'>
-                                                <Text textAlign='justify' fontSize='14px' key={index}>
+                                                <Text textAlign='justify' fontSize='14px'>
                                                     {item?.description}
                                                 </Text>
                                             </Box>
-                                            <Text color='#FF7940' fontSize='16px' fontWeight='600' key={index}>
+                                            <Text color='#FF7940' fontSize='16px' fontWeight='600'>
                                                Rp. {item?.price}
                                             </Text>
                                         </Stack>
