@@ -20,17 +20,13 @@ const ModalUpdateProduct : React.FC<ModalUpdateProductProps> = ({isOpen, onClose
     const [category, setCategory] = useState([])
     const [status, setStatus] = useState([])
     const toast = useToast()
-    // console.log("productbyid", productById);
-    // console.log("id", productId);
-    
 
     const getCategoryAll = async () => {
         try {
             const res = await axios.get(`http://localhost:8080/category`);
             setCategory(res?.data?.data)
         } catch (err : any) {
-            // alert(err?.response?.data);
-            toast({ title: err, status: 'error', duration: 4000, isClosable: true})
+            toast({ title: err?.response?.data, status: 'error', position: 'top', duration: 2000, isClosable: true})
         }
     };
 
@@ -39,7 +35,7 @@ const ModalUpdateProduct : React.FC<ModalUpdateProductProps> = ({isOpen, onClose
             const res = await axios.get(`http://localhost:8080/status`);
             setStatus(res?.data?.data)
         } catch (err : any) {
-            toast({ title: err, status: 'error', duration: 4000, isClosable: true})
+            toast({ title: err?.response?.data, status: 'error', position: 'top', duration: 2000, isClosable: true})
         }
     };
 
@@ -78,12 +74,10 @@ const ModalUpdateProduct : React.FC<ModalUpdateProductProps> = ({isOpen, onClose
             const res = await axios.patch(`http://localhost:8080/product/update/${productId}`, 
               formData, 
             );
-            // console.log(res?.data?.data);
             toast({ title: res?.data?.message, status: 'success', position: 'top', duration: 2000, isClosable: true})
             setTimeout(() => {onClose()}, 3000);
         } catch (err : any) {
-            alert(err);
-            // toast({ title: err, status: 'error', duration: 4000, isClosable: true})
+            toast({ title: err?.response?.data, status: 'error', position: 'top', duration: 2000, isClosable: true})
         }
     }
 

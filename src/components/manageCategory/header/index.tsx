@@ -2,10 +2,6 @@ import { useDisclosure, Box, Text, Input, Button } from '@chakra-ui/react';
 import { IconSearch, IconPlus } from '@tabler/icons-react';
 import ModalCreateCategory from '../../modal/createCategory';
 
-// interface HeaderManageCategoryProps {
-//     categoryId: (id: number | null) => void;
-// }
-
 const HeaderManageCategory   = () => {
     const { isOpen, onOpen, onClose } = useDisclosure()
     return (

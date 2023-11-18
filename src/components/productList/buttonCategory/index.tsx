@@ -15,10 +15,8 @@ const ButtonCategory : React.FC<ButtonCategoryProps> = ({onCategoryChange}) => {
         try {
             const res = await axios.get(`http://localhost:8080/category`);
             setCategory(res?.data?.data)
-            // toast({ title: res?.data?.message, status: 'success', position: 'top', duration: 4000, isClosable: true})
         } catch (err : any) {
-            alert(err);
-            // toast({ title: err.response.data, status: 'error', duration: 2000, isClosable: true})
+            toast({ title: err.response.data, status: 'error', duration: 2000, isClosable: true})
         }
     };
 

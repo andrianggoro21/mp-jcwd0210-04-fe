@@ -39,12 +39,10 @@ const ModalCreateCategory : React.FC<ModalCreateProductProps> = ({isOpen, onClos
             const res = await axios.post("http://localhost:8080/category", 
               formData
             );
-            // console.log(res?.data?.data);
             toast({ title: res?.data?.message, status: 'success', position: 'top', duration: 4000, isClosable: true})
             setTimeout(() => {onClose();  window.location.reload();}, 3000);
         } catch (err : any) {
-            // alert(err?.response?.data);
-            toast({ title: err, status: 'error', duration: 4000, isClosable: true})
+            toast({ title: err?.response?.data, status: 'error', position: 'top', duration: 2000, isClosable: true})
         }
     }
 

@@ -20,10 +20,7 @@ interface Product {
     status: any;
     createdAt: string;
     updatedAt: string;
-    // Add other properties as needed
   }
-
- 
 
 const BodyManageProduct = ({}) => {
     const { isOpen, onOpen, onClose } = useDisclosure()
@@ -31,23 +28,44 @@ const BodyManageProduct = ({}) => {
     const [product, setProduct] = useState([])
     const [productById, setProductById] = useState<Product | null>()
     const [productId, setProductId] = useState<number | any>()
+    const [productStatus, setProductStatus] = useState<Product | null>()
+    const [productDelete, setProductDelete] = useState<Product | null>()
     const toast = useToast()
 
     const getProductAll = async () => {
         try {
             const res = await axios.get(`http://localhost:8080/product`);
-            // console.log(res?.data?.data);
             setProduct(res?.data?.data)
-            // toast({ title: res?.data?.message, status: 'success', position: 'top', duration: 4000, isClosable: true})
         } catch (err : any) {
-            alert(err);
-            // toast({ title: err, status: 'error', duration: 4000, isClosable: true})
+            toast({ title: err?.response?.data, status: 'error', position: 'top', duration: 2000, isClosable: true})
+        }
+    };
+
+    const updateProductStatus = async (productId: number, newStatus: number) => {
+        try {
+            const res = await axios.patch(`http://localhost:8080/product/update/${productId}`, {
+                statusId: newStatus
+            });
+            setProductStatus(res?.data?.data)
+            toast({ title: res?.data?.message, status: 'success', position: 'top', duration: 2000, isClosable: true})
+        } catch (err : any) {
+            toast({ title: err?.response?.data, status: 'error', position: 'top', duration: 2000, isClosable: true})
+        }
+    };
+
+    const deleteProduct = async (productId: number) => {
+        try {
+            const res = await axios.delete(`http://localhost:8080/product/product/${productId}`);
+            setProductDelete(res?.data?.data)
+            toast({ title: res?.data?.message, status: 'success', position: 'top', duration: 2000, isClosable: true})
+        } catch (err : any) {
+            toast({ title: err?.response?.data, status: 'error', position: 'top', duration: 2000, isClosable: true})
         }
     };
 
     useEffect(() => {
         getProductAll();
-    }, []);
+    }, [productStatus, productDelete]);
 
     const handleModalClose = () => {
         onClose();
@@ -73,7 +91,7 @@ const BodyManageProduct = ({}) => {
                     </Tr>
                 </Thead>
                 <Tbody color='#1E1E1E' fontFamily='Nunito' fontWeight='400' fontSize='20px'>
-                    {product?.map((item: any, index) => (
+                    {product?.map((item: any) => (
                         <Tr >
                             <Td><Checkbox isChecked={selectAll}/></Td>
                             <Td><Image w='100px' h='60px' src={`${import.meta.env.VITE_APP_IMAGE_URL}/product/${item?.image}`} /></Td>
@@ -84,8 +102,13 @@ const BodyManageProduct = ({}) => {
                             <Td fontSize='16px'> 
                                 <Box w='160px' h='50px' overflow='hidden' textOverflow='ellipsis' whiteSpace='normal' /*overflowY='auto'*/ >{item?.description}</Box> 
                             </Td>
-                            <Td textAlign='center'><Switch colorScheme='green'/></Td>
-                            <Td textAlign='center'><Box display='flex' justifyContent='center' gap='10px'><Button size='sm' w='50px' bgColor='#FF7940' color='#ffffff' onClick={() => { setProductById(item); setProductId(item?.id); onOpen(); }} >Edit</Button> <Button size='sm' w='50px' variant='outline' color='#FF7940' border='1px solid #FF7940'>Delete</Button></Box></Td>
+                            <Td textAlign='center'><Switch colorScheme='green' isChecked={item.statusId === 2} onChange={() => updateProductStatus(item.id, item.statusId === 2 ? 1 : 2)}/></Td>
+                            <Td textAlign='center'>
+                                <Box display='flex' justifyContent='center' gap='10px'>
+                                    <Button size='sm' w='50px' bgColor='#FF7940' color='#ffffff' onClick={() => { setProductById(item); setProductId(item?.id); onOpen(); }} >Edit</Button> 
+                                    <Button size='sm' w='50px' variant='outline' color='#FF7940' border='1px solid #FF7940' onClick={() => deleteProduct(item.id)}>Delete</Button>
+                                </Box>
+                            </Td>
                         </Tr>
                     ))}
                 </Tbody>

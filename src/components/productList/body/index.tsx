@@ -1,17 +1,16 @@
 import { Box, Button, Text, Image, Heading, Stack, Divider, ButtonGroup, Select } from '@chakra-ui/react';
-import { Card, CardHeader, CardBody, CardFooter } from '@chakra-ui/react'
+import { Card, CardHeader, CardBody, CardFooter, InputGroup, InputLeftElement } from '@chakra-ui/react'
 import { Grid, GridItem } from '@chakra-ui/react'
 import { IconPlus } from '@tabler/icons-react';
 import ButtonCategory from '../buttonCategory';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useToast } from '@chakra-ui/react';
-import { useFormik } from "formik";
 interface BodyProductListProps {
     currentPage: number;
     onPageChange: (newPage: number) => void;
     inputSearch: string;
-  }
+}
 
 const BodyProductList : React.FC<BodyProductListProps> = ({currentPage, onPageChange, inputSearch}) => {
     const [product, setProduct] = useState([])
@@ -30,7 +29,7 @@ const BodyProductList : React.FC<BodyProductListProps> = ({currentPage, onPageCh
             const res = await axios.get(`http://localhost:8080/product/pagination`, {
                 params: {
                     page: pageToFetch,
-                    pageSize: 5,
+                    pageSize: 7,
                     productName: inputSearch,
                     categoryId: categoryChange,
                     alphaId: alphabet,
@@ -39,10 +38,8 @@ const BodyProductList : React.FC<BodyProductListProps> = ({currentPage, onPageCh
                 }
             });
             setProduct(res?.data?.data)
-            // toast({ title: res?.data?.message, status: 'success', position: 'top', duration: 4000, isClosable: true})
         } catch (err : any) {
-            alert(err);
-            // toast({ title: err.response.data, status: 'error', duration: 2000, isClosable: true})
+            toast({ title: err?.response?.data, status: 'error', position: 'top', duration: 2000, isClosable: true})
         }
     };
 
@@ -74,15 +71,15 @@ const BodyProductList : React.FC<BodyProductListProps> = ({currentPage, onPageCh
                     {/* <form onSubmit={formik.handleSubmit} > */}
                         <Box display='flex' gap='20px'>
                             <Box>
-                                <Select bgColor="#ffffff" placeholder="ALPHABET" name="alphabet" value={alphabet === null ? undefined : alphabet} onChange={(e) => handleAlphabetChange(Number(e.target.value))}>
-                                    <option value={undefined}>None</option>
+                                <Select bgColor="#ffffff" placeholder="" name="alphabet" value={alphabet === null ? undefined : alphabet} onChange={(e) => handleAlphabetChange(Number(e.target.value))}>
+                                    <option value={undefined}>Alphabet</option>
                                     <option value={0}>A - Z</option>
                                     <option value={1}>Z - A</option>
                                 </Select>
                             </Box>
                             <Box>
-                                <Select bgColor="#ffffff" placeholder="PRICE" name="price" value={price === null ? undefined : price} onChange={(e) => handlePriceChange(Number(e.target.value))}>
-                                    <option value={undefined}>None</option>
+                                <Select bgColor="#ffffff" placeholder="" name="price" value={price === null ? undefined : price} onChange={(e) => handlePriceChange(Number(e.target.value))}>
+                                    <option value={undefined}>Price</option>
                                     <option value={0}>Lowest Price</option>
                                     <option value={1}>Highest Price</option>
                                 </Select>
@@ -92,9 +89,9 @@ const BodyProductList : React.FC<BodyProductListProps> = ({currentPage, onPageCh
                         </Box>
                     {/* </form> */}
                 </Box>
-                <Box mt='20px' >
-                    <Grid templateColumns='repeat(6, 1fr)' gap={5} overflow='hidden'>
-                        {product?.map((item : any) => (
+                <Box mt='10px' >
+                    <Grid templateColumns='repeat(6, 1fr)' gridColumnGap={1} gridRowGap={10} overflow='hidden' padding='20px'>
+                        {/* {product?.map((item : any) => (
                             <GridItem>
                                 <Card w='220px' h='300px' padding='0' borderRadius='16px'>
                                     <Box display='flex' alignItems='flex-end' justifyContent='right'>
@@ -118,10 +115,59 @@ const BodyProductList : React.FC<BodyProductListProps> = ({currentPage, onPageCh
                                     </CardBody>
                                 </Card>
                             </GridItem>
+                        ))} */}
+
+                        {product?.map((item: any) => (
+                            <GridItem display='flex' className='grid item' alignItems='center' justifyContent='center' key={item.id} >
+                                {item?.statusId !== 1 ? ( 
+                                <Card w='220px' h='300px' padding='0' borderRadius='16px' css={{transition: 'transform 0.3s ease-in-out',':hover': {transform: 'scale(1.1)',},}}>
+                                    <Box display='flex' alignItems='flex-end' justifyContent='right'>
+                                        <Image  w='100%' borderTopRadius='16px' src={`${import.meta.env.VITE_APP_IMAGE_URL}/product/${item?.image}`}/>
+                                        <Box w='35px' h='35px' display='flex' alignItems='center' justifyContent='center' position='absolute' top='38%' left='87%' transform='translate(-50%, -50%)' bgColor='rgba(148, 148, 148, 0.7)' borderRadius='4px'>
+                                            <IconPlus color='#ffffff'/>
+                                        </Box>
+                                    </Box>
+                                    <CardBody padding='10px'>
+                                        <Stack spacing='4'>
+                                            <Heading size='sm'>{item?.productName}</Heading>
+                                            <Box h='60px' overflow='hidden'>
+                                                <Text textAlign='justify' fontSize='14px'>
+                                                    {item?.description}
+                                                </Text>
+                                            </Box>
+                                            <Text color='#FF7940' fontSize='16px' fontWeight='600'>
+                                               Rp. {item?.price}
+                                            </Text>
+                                        </Stack>
+                                    </CardBody>
+                                </Card>
+                                ) : (
+                                <Card key={item.id}w='220px' h='300px' padding='0' borderRadius='16px' bgColor='rgba(148, 148, 148, 0.5)'>
+                                    <Box display='flex' alignItems='flex-end' justifyContent='right'>
+                                        <Image  w='100%' borderTopRadius='16px' src={`${import.meta.env.VITE_APP_IMAGE_URL}/product/${item?.image}`}/>
+                                        <Box w='35px' h='35px' display='flex' alignItems='center' justifyContent='center' position='absolute' top='38%' left='87%' transform='translate(-50%, -50%)' bgColor='rgba(148, 148, 148, 0.7)' borderRadius='4px'>
+                                            <IconPlus color='#ffffff'/>
+                                        </Box>
+                                    </Box>
+                                    <CardBody padding='10px'>
+                                        <Stack spacing='4'>
+                                            <Heading size='sm'>{item?.productName}</Heading>
+                                            <Box h='60px' overflow='hidden'>
+                                                <Text textAlign='justify' fontSize='14px'>
+                                                    {item?.description}
+                                                </Text>
+                                            </Box>
+                                            <Text color='#FF7940' fontSize='16px' fontWeight='600'>
+                                               Rp. {item?.price}
+                                            </Text>
+                                        </Stack>
+                                    </CardBody>
+                                </Card>
+                                )}
+                            </GridItem>
                         ))}
                     </Grid>
                 </Box>
-                
             </Box>
         </Box>
     )

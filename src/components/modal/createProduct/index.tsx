@@ -22,22 +22,18 @@ const ModalCreateProduct : React.FC<ModalCreateProductProps> = ({isOpen, onClose
     const getCategoryAll = async () => {
         try {
             const res = await axios.get(`http://localhost:8080/category`);
-            // console.log(res?.data?.data);
             setCategory(res?.data?.data)
         } catch (err : any) {
-            // alert(err?.response?.data);
-            toast({ title: err, status: 'error', duration: 4000, isClosable: true})
+            toast({ title: err?.response?.data, status: 'error', position: 'top', duration: 2000, isClosable: true})
         }
     };
 
     const getStatusAll = async () => {
         try {
             const res = await axios.get(`http://localhost:8080/status`);
-            // console.log(res?.data?.data);
             setStatus(res?.data?.data)
         } catch (err : any) {
-            // alert(err?.response?.data);
-            toast({ title: err, status: 'error', duration: 4000, isClosable: true})
+            toast({ title: err?.response?.data, status: 'error', position: 'top', duration: 2000, isClosable: true})
         }
     };
 
@@ -80,8 +76,7 @@ const ModalCreateProduct : React.FC<ModalCreateProductProps> = ({isOpen, onClose
             toast({ title: res?.data?.message, status: 'success', position: 'top', duration: 4000, isClosable: true})
             setTimeout(() => {onClose();  window.location.reload();}, 3000);
         } catch (err : any) {
-            // alert(err?.response?.data);
-            toast({ title: err, status: 'error', duration: 4000, isClosable: true})
+            toast({ title: err?.response?.data, status: 'error', position: 'top', duration: 2000, isClosable: true})
         }
     }
 
