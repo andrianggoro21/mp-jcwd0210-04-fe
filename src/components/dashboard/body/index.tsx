@@ -7,12 +7,68 @@ import { IconCurrencyDollar, IconBox, IconUser, } from '@tabler/icons-react';
 import { IconTrendingUp } from '@tabler/icons-react';
 import { AreaChart } from '../../areaChart';
 import ButtonCategoryDashboard from '../buttonCategory';
+import { useToast } from '@chakra-ui/react';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 
-
+interface Product {
+    // Define your product type here, or use Record<string, any> for a generic type
+    id: number;
+    productName: string;
+    transaction_details: { transaction: { date: string }; quantity: number }[];
+    // Add other properties if needed
+  }
 
 const BodyDashboard = () => {
+    const [bestSeller, setBestSeller] = useState<Product[]>([]);
+    const toast = useToast()
+
+
+    const getBestSeller = async () => {
+        try {
+            const res = await axios.get(`http://localhost:8080/report/best-seller`);
+            console.log(res?.data?.data);
+
+            const updatedBestSeller = res?.data?.data?.map((product: Product) => {
+                const sortedTransactionDetails = product.transaction_details.sort(
+                  (a: any, b: any) =>
+                    new Date(b.transaction.date).getTime() - new Date(a.transaction.date).getTime()
+                );
+        
+                const totalQuantity = sortedTransactionDetails.reduce(
+                  (sum: number, transaction: any) => sum + transaction.quantity,
+                  0
+                );
+        
+                const averageQuantityPerDay =
+                  totalQuantity / sortedTransactionDetails.length || 0;
+        
+                return {
+                  ...product,
+                  totalQuantity,
+                  averageQuantityPerDay,
+                };
+              });
+        
+              const sortedBestSeller = updatedBestSeller.sort(
+                (a: Product, b: Product) =>
+                  new Date(b.transaction_details[0]?.transaction?.date).getTime() -
+                  new Date(a.transaction_details[0]?.transaction?.date).getTime()
+              );
+        
+              setBestSeller(sortedBestSeller);
+            
+            // setBestSeller(res?.data?.data)
+        } catch (err : any) {
+            toast({ title: err?.response?.data, status: 'error', position: 'top', duration: 2000, isClosable: true})
+        }
+    };
+
+    useEffect(() => {
+        getBestSeller();
+    }, []);
     return (
-        <Box mt='50px'>
+        <Box mt='30px'>
             <Box display='flex' gap='30px' mb='30px'>
                 <Card w='400px' h='230px' padding='5' borderRadius='16px' background= "linear-gradient(102.57deg, #FF7940 19.4%, #FF40B3 95.09%)">
                         <CardBody padding='10px' paddingTop='100px'>
@@ -121,18 +177,6 @@ const BodyDashboard = () => {
                 <Box w='30%'>
                     <Text color='#000000' fontFamily="Nunito" fontWeight='700' fontSize='18px'>Best Sellers</Text>
                     <Box h='547px' bgColor='#ffffff' padding='20px' mt='20px' borderRadius='20px'>
-                        {/* <Box display='flex' justifyContent='space-around' borderBottom='1px solid #D9D9D9' padding='0 0 20px 0'>
-                            <Text fontFamily='Nunito' fontWeight='500' fontSize='18px'>Menu</Text>
-                            <Text>Total Order</Text>
-                        </Box>
-                        <Box display='flex' alignItems='center' justifyContent='space-around' padding='20px 0 20px 0'>
-                            <Box display='flex' alignItems='center' gap='20px'>
-                                <Box w='56px' h='56px' bgColor='#D9D9D9' />
-                                <Text>Menu</Text>
-                            </Box>
-                            <Text>Total Order</Text>
-                        </Box>
-                        */}
                         <TableContainer>
                             <Table variant='simple'>
                                 <Thead>
@@ -142,20 +186,25 @@ const BodyDashboard = () => {
                                     </Tr>
                                 </Thead>
                                 <Tbody fontFamily='Nunito' fontWeight='500' fontSize='16px'>
-                                    <Tr>
-                                        <Td>
-                                            <Box display='flex' alignItems='center' gap='20px'>
-                                                <Box w='56px' h='56px' bgColor='#D9D9D9' borderRadius='5px'/>
-                                                <Text >Fried Rice</Text>
-                                            </Box>
-                                        </Td>
-                                        <Td >
-                                            <Box display='flex' gap='5px' color='#999999'>
-                                                <Text color='#000000'>120</Text> orders / day
-                                            </Box>
-                                            
-                                        </Td>  
-                                    </Tr>
+                                    {bestSeller?.map((item: any) => (
+                                        <Tr>
+                                            <Td>
+                                                <Box display='flex' alignItems='center' gap='20px'>
+                                                    {/* <Box w='56px' h='56px' bgColor='#D9D9D9' borderRadius='5px'/> */}
+                                                    <Image w='76px' h='56px' borderRadius='5px' src={`${import.meta.env.VITE_APP_IMAGE_URL}/product/${item?.image}`} />
+                                                    <Text >{item?.productName}</Text>
+                                                </Box>
+                                            </Td>
+                                            <Td >
+                                                <Box display='flex' gap='5px' color='#999999'>
+                                                    <Text color='#000000'>{Math.round(item?.averageQuantityPerDay)}</Text> orders / day
+                                                </Box>
+                                                
+                                            </Td>  
+                                        </Tr>
+                                    ))}
+
+                                    
                                     
                                 </Tbody>
                             </Table>
