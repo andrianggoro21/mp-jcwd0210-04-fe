@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 import { IconPrinter, IconDownload  } from '@tabler/icons-react';
 import axios from 'axios';
 import { useToast } from '@chakra-ui/react';
+import { Link } from 'react-router-dom';
 
 interface BodyReportTransactionProps {
     startDate: string;
@@ -15,8 +16,8 @@ interface BodyReportTransactionProps {
 const BodyReportTransaction : React.FC<BodyReportTransactionProps> = ({ startDate, endDate }) => {
     const [transaction, setTransaction] = useState([])
     const toast = useToast()
-    console.log("startDate", startDate);
-    console.log("endDate", endDate);
+    // console.log("startDate", startDate);
+    // console.log("endDate", endDate);
     
     
 
@@ -39,11 +40,6 @@ const BodyReportTransaction : React.FC<BodyReportTransactionProps> = ({ startDat
         
         getTransactionAll();
         
-        // const fetchData = async () => {
-        //     await getTransactionAll();
-        // };
-
-        // fetchData();
     }, [endDate]);
     
     return (
@@ -56,6 +52,7 @@ const BodyReportTransaction : React.FC<BodyReportTransactionProps> = ({ startDat
                         <Th color='#ffffff'>Time of Transactions</Th>
                         <Th color='#ffffff'>Cashier</Th>
                         <Th color='#ffffff'>Product</Th>
+                        <Th color='#ffffff'>Total Quantity</Th>
                         <Th color='#ffffff'>Total Transactions</Th>
                         <Th color='#ffffff' textAlign='center'>Action</Th>
                     </Tr>
@@ -64,14 +61,17 @@ const BodyReportTransaction : React.FC<BodyReportTransactionProps> = ({ startDat
                     {transaction?.map((item : any) => (
                         <Tr>
                             <Td >{item?.id}</Td>
-                            <Td >{item?.date}</Td>
+                            <Td >{new Date(item?.date).toLocaleString()}</Td>
                             <Td >{item?.user?.username}</Td>
-                            <Td >{item?.transaction_details.map((item: any) => item?.product?.productName)}</Td>
+                            <Td><Link to={'/transaction-product'} onClick={()=> localStorage.setItem("transactionId", item.id)}><Box w='120px' h='30px' color='#FF7940' border='1px solid #FF7940' borderRadius='5px' display='flex' alignItems='center' justifyContent='center'>Product Detail</Box></Link></Td>
+                            {/* <Td ><Link to={'/transaction-product'} onClick={()=> localStorage.setItem("transactionId", item.id)}>{item?.transaction_details.map((item: any) => item?.product?.productName)}</Link></Td> */}
+                            <Td >{item?.totalQuantity}</Td>
                             <Td >{item?.totalPrice}</Td>
                             <Td textAlign='center'>
                                 <Box display='flex' justifyContent='center' gap='10px'>
+                                    
                                     <Button size='sm' w='100px' variant='outline' color='#FF7940' border='1px solid #FF7940'>View Invoice</Button>
-                                    <Button size='sm' w='50px' variant='outline' color='#FF7940' border='1px solid #FF7940'><IconPrinter stroke={1.5}/></Button>
+                                    {/* <Button size='sm' w='50px' variant='outline' color='#FF7940' border='1px solid #FF7940'><IconPrinter stroke={1.5}/></Button> */}
                                     <Button size='sm' w='50px' variant='outline' color='#FF7940' border='1px solid #FF7940'><IconDownload stroke={1.5}/></Button>
                                 </Box>
                             </Td>

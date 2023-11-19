@@ -26,6 +26,9 @@ import FooterStatistic from './components/statistic/footer';
 import HeaderDashboard from './components/dashboard/header';
 import BodyDashboard from './components/dashboard/body';
 import FooterDashboard from './components/dashboard/footer';
+import HeaderTransactionProduct from './components/transactionProductDetail/header';
+import BodyTransactionProduct from './components/transactionProductDetail/body';
+import FooterTransactionProduct from './components/transactionProductDetail/footer';
 
 function App() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -66,6 +69,7 @@ function App() {
         <Route path='/report-transaction' element={<AdminPage viewHeader={<HeaderReportTransaction onDateChange={handleDateChange} />} viewBody={<BodyReportTransaction startDate={startDate} endDate={endDate} />} viewFooter={<FooterReportTransaction/>}/>} />
         <Route path='/report-cashier' element={<AdminPage viewHeader={<HeaderReportCashier />} viewBody={<BodyReportCashier/>} viewFooter={<FooterReportCashier/>}/>} />
         <Route path='/report-statistic' element={<AdminPage viewHeader={<HeaderStatistic />} viewBody={<BodyStatistic/>} />} />
+        <Route path='/transaction-product' element={<AdminPage viewHeader={<HeaderTransactionProduct />} viewBody={<BodyTransactionProduct/>} viewFooter={<FooterTransactionProduct/>}/>} />
       </Routes>
   
     </>
