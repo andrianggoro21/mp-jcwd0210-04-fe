@@ -8,12 +8,14 @@ import { useFormik } from "formik";
 import { useToast } from '@chakra-ui/react';
 import axios from 'axios';
 
-interface ModalCreateProductProps {
+interface ModalUpdateProductProps {
     isOpen: boolean;
     onClose: () => void;
+    productId: number;
+    productById: any;
 }
 
-const ModalCreateProduct : React.FC<ModalCreateProductProps> = ({isOpen, onClose}) => {
+const ModalUpdateProduct : React.FC<ModalUpdateProductProps> = ({isOpen, onClose, productId, productById}) => {
     const [image, setImage] = useState <string | null>(null);
     const [category, setCategory] = useState([])
     const [status, setStatus] = useState([])
@@ -40,12 +42,12 @@ const ModalCreateProduct : React.FC<ModalCreateProductProps> = ({isOpen, onClose
     useEffect(() => {
         getCategoryAll();
         getStatusAll();
-    }, []);
+    }, [productId]);
 
     const handleResetForm = () => {
-        formik.resetForm();
-        setImage(null)
-     };
+       formik.resetForm();
+       setImage(null)
+    };
 
     const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
         accept: ['image/*'] as any,
@@ -57,24 +59,23 @@ const ModalCreateProduct : React.FC<ModalCreateProductProps> = ({isOpen, onClose
         },
     });
 
-    const createProduct = async (productName: string, categoryId: string, price: string, stock: string, description: string, statusId: string) => {
+    const updateProduct = async (productName: string, categoryId: string, price: string, stock: string, description: string, statusId: string, acceptedFiles: File[]) => {
         try {
             let formData = new FormData();
-            formData.append("productName", productName);
-            formData.append("categoryId", categoryId);
-            formData.append("price", price);
-            formData.append("stock", stock);
-            formData.append("description", description);
-            formData.append("statusId", statusId);
+            formData.append("productName", productName || '');
+            formData.append("categoryId", categoryId || '');
+            formData.append("price", price || '');
+            formData.append("stock", stock || '');
+            formData.append("description", description || '');
+            formData.append("statusId", statusId || '');
             acceptedFiles.forEach((file) => {
-                formData.append("image", file);
+                formData.append("image", file? file : productById?.image);
             });
-            const res = await axios.post("http://localhost:8080/product", 
-              formData
+            const res = await axios.patch(`http://localhost:8080/product/update/${productId}`, 
+              formData, 
             );
-            // console.log(res?.data?.data);
-            toast({ title: res?.data?.message, status: 'success', position: 'top', duration: 4000, isClosable: true})
-            setTimeout(() => {onClose();  window.location.reload();}, 3000);
+            toast({ title: res?.data?.message, status: 'success', position: 'top', duration: 2000, isClosable: true})
+            setTimeout(() => {onClose()}, 3000);
         } catch (err : any) {
             toast({ title: err?.response?.data, status: 'error', position: 'top', duration: 2000, isClosable: true})
         }
@@ -82,26 +83,29 @@ const ModalCreateProduct : React.FC<ModalCreateProductProps> = ({isOpen, onClose
 
     const formik = useFormik({
         initialValues: {
-            productName: "",
-            categoryId: "",
-            price: "",
-            stock: "",
-            description: "",
-            statusId: "",
+            image: productById?.image,
+            productName: productById?.productName,
+            categoryId: productById?.categoryId,
+            price: productById?.price,
+            stock: productById?.stock,
+            description:  productById?.description,
+            statusId: productById?.statusId,
         },
     
-        onSubmit: (values) => {
-            createProduct(values.productName, values.categoryId, values.price, values.stock, values.description, values.statusId)
+        onSubmit: (values : any) => {
+            updateProduct(values.productName, values.categoryId, values.price, values.stock, values.description, values.statusId, acceptedFiles)
         },
     });
 
+   
+
     return (
         <Box  w="900px">
-            <Modal  onClose={() => { onClose(); window.location.reload(); }} isOpen={isOpen} size='custom' isCentered>
+            <Modal  onClose={onClose} isOpen={isOpen} size='custom' isCentered>
                 <ModalOverlay />
                 <form onSubmit={formik.handleSubmit} >
                     <ModalContent w="1050px" h="700px">
-                        <ModalHeader>Create Product</ModalHeader>
+                        <ModalHeader>Update Product</ModalHeader>
                         <ModalCloseButton />
                         <ModalBody>
                             <Box display='flex' justifyContent='center' flexDirection='column' gap='20px'>
@@ -111,9 +115,9 @@ const ModalCreateProduct : React.FC<ModalCreateProductProps> = ({isOpen, onClose
                                             <FormLabel color='#696666'>Product Image</FormLabel>
                                             <Box bgColor='#EEEDED' h='265px' display='flex' alignItems='center' justifyContent='center' borderRadius='10px'>
                                                 <Box {...getRootProps()} className="dropzone" color="#ffffff" display="flex" alignItems="center" justifyContent="center">
-                                                    <Input {...getInputProps()}  size="xl" type='file' w='100%' h='100%' position='absolute' opacity='0'/>
-                                                    <Box hidden={image ? true : false}>
-                                                        <IconPhoto color='#838383' width='130px' height='80px'/>
+                                                    <Input {...getInputProps()} size="xl" type='file' w='100%' h='100%' position='absolute' opacity='0'/>
+                                                    <Box hidden={image? true : false}>
+                                                        <img src={`${import.meta.env.VITE_APP_IMAGE_URL}/product/${formik.values.image}`}/>
                                                     </Box>  
                                                 </Box>
                                                 {image && <img src={image}  />}
@@ -121,7 +125,7 @@ const ModalCreateProduct : React.FC<ModalCreateProductProps> = ({isOpen, onClose
                                         </FormControl>
                                         <FormControl>
                                             <FormLabel color='#696666'>Status</FormLabel>
-                                            <Select bgColor='#EEEDED' placeholder='Select option' name="statusId" value={formik.values.statusId} onChange={formik.handleChange}>
+                                            <Select bgColor='#EEEDED'  name="statusId" value={formik.values.statusId} onChange={formik.handleChange}>
                                                 {status?.map((item : any, index) => (
                                                         <option key={index} value={item.id}>{item.statusName}</option>
                                                     ))}
@@ -131,22 +135,22 @@ const ModalCreateProduct : React.FC<ModalCreateProductProps> = ({isOpen, onClose
                                     <Box w='50%' display='flex' flexDirection='column' gap='34px'>
                                         <FormControl>
                                             <FormLabel color='#696666'>Product Name</FormLabel>
-                                            <Input bgColor='#EEEDED' placeholder='Product name here...' name="productName" value={formik.values.productName} onChange={formik.handleChange}/>
+                                            <Input bgColor='#EEEDED' placeholder='' _placeholder={{color: "black"}} name="productName" value={formik.values.productName} onChange={formik.handleChange}/>
                                         </FormControl>
                                         <FormControl>
                                             <FormLabel color='#696666'>Price</FormLabel>
                                             <InputGroup>
                                                 <InputLeftAddon bgColor='#EEEDED' children='Rp' />
-                                                <Input type='tel' bgColor='#EEEDED' placeholder='phone number' name="price" value={formik.values.price} onChange={formik.handleChange} />
+                                                <Input type='tel' bgColor='#EEEDED'  name="price" value={formik.values.price} onChange={formik.handleChange} />
                                             </InputGroup>
                                         </FormControl>
                                         <FormControl>
                                             <FormLabel color='#696666'>Stock</FormLabel>
-                                            <Input bgColor='#EEEDED' placeholder='Type stock here...' name="stock" value={formik.values.stock} onChange={formik.handleChange}/>
+                                            <Input bgColor='#EEEDED' name='stock' value={formik.values.stock} onChange={formik.handleChange}/>
                                         </FormControl>
                                         <FormControl>
                                             <FormLabel color='#696666'>Product Category</FormLabel>
-                                            <Select bgColor='#EEEDED' placeholder='Select option' name="categoryId" value={formik.values.categoryId} onChange={formik.handleChange}>
+                                            <Select bgColor='#EEEDED' name="categoryId" value={formik.values.categoryId} onChange={formik.handleChange}>
                                                 {category?.map((item : any, index) => (
                                                     <option key={index} value={item.id}>{item.categoryName}</option>
                                                 ))}
@@ -157,7 +161,7 @@ const ModalCreateProduct : React.FC<ModalCreateProductProps> = ({isOpen, onClose
                                 </Box>
                                 <FormControl>
                                     <FormLabel color='#696666'>Description</FormLabel>
-                                    <Textarea bgColor='#EEEDED' placeholder='Tell the description of the product here...' name="description" value={formik.values.description} onChange={formik.handleChange}/>
+                                    <Textarea bgColor='#EEEDED'  name="description" value={formik.values.description} onChange={formik.handleChange}/>
                                 </FormControl>
                             </Box>
                         </ModalBody>
@@ -174,4 +178,4 @@ const ModalCreateProduct : React.FC<ModalCreateProductProps> = ({isOpen, onClose
     )
 }
 
-export default ModalCreateProduct;
+export default ModalUpdateProduct;

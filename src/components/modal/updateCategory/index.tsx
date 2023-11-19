@@ -10,14 +10,19 @@ import { useFormik } from "formik";
 import { useToast } from '@chakra-ui/react';
 
 
-interface ModalCreateProductProps {
+interface ModalUpdateCategoryProps {
     isOpen: boolean;
     onClose: () => void;
+    categoryId: number;
+    categoryById: any;
 }
 
-const ModalCreateCategory : React.FC<ModalCreateProductProps> = ({isOpen, onClose}) => {
+const ModalUpdateCategory : React.FC<ModalUpdateCategoryProps> = ({isOpen, onClose, categoryId, categoryById}) => {
     const [image, setImage] = useState <string | null>(null);
     const toast = useToast()
+    console.log("category", categoryById?.categoryName);
+    console.log("id", categoryId);
+    
 
     const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
         accept: ['image/*'] as any,
@@ -29,18 +34,18 @@ const ModalCreateCategory : React.FC<ModalCreateProductProps> = ({isOpen, onClos
         },
       });
 
-    const createCategory = async (categoryName: string) => {
+    const updateCategory = async (categoryName: string) => {
         try {
             let formData = new FormData();
             formData.append("categoryName", categoryName);
             acceptedFiles.forEach((file) => {
-                formData.append("image", file);
+                formData.append("image", file? file : categoryById?.image);
             });
-            const res = await axios.post("http://localhost:8080/category", 
+            const res = await axios.patch(`http://localhost:8080/category/update/${categoryId}`, 
               formData
             );
-            toast({ title: res?.data?.message, status: 'success', position: 'top', duration: 4000, isClosable: true})
-            setTimeout(() => {onClose();  window.location.reload();}, 3000);
+            toast({ title: res?.data?.message, status: 'success', position: 'top', duration: 2000, isClosable: true})
+            setTimeout(() => {onClose()}, 3000);
         } catch (err : any) {
             toast({ title: err?.response?.data, status: 'error', position: 'top', duration: 2000, isClosable: true})
         }
@@ -48,21 +53,27 @@ const ModalCreateCategory : React.FC<ModalCreateProductProps> = ({isOpen, onClos
 
     const formik = useFormik({
         initialValues: {
-            categoryName: "",
+            categoryName: categoryById?.categoryName,
+            image: categoryById?.image,
         },
     
         onSubmit: (values) => {
-            createCategory(values.categoryName)
+            updateCategory(values.categoryName)
         },
-    });
+      });
+
+      const handleResetForm = () => {
+        formik.resetForm();
+        setImage(null)
+     };
 
     return (
         <Box  w="900px">
-            <Modal onClose={() => { onClose(); window.location.reload(); }} isOpen={isOpen} size='custom' isCentered>
+            <Modal  onClose={onClose} isOpen={isOpen} size='custom' isCentered>
                 <ModalOverlay />
                 <form onSubmit={formik.handleSubmit} >
                     <ModalContent w="490px" h="450px">
-                        <ModalHeader>Create Category</ModalHeader>
+                        <ModalHeader>Update Category</ModalHeader>
                         <ModalCloseButton />
                         <ModalBody>
                             <Box w='100%' display='flex' justifyContent='center' alignItems='center' flexDirection='column' gap='20px'>
@@ -73,8 +84,10 @@ const ModalCreateCategory : React.FC<ModalCreateProductProps> = ({isOpen, onClos
                                             <Box {...getRootProps()} className="dropzone" color="#ffffff" display="flex" alignItems="center" justifyContent="center">
                                                 <Input {...getInputProps()}  size="lg" /*type='file' w='100%' h='100%' position='absolute' opacity='0'*//>
                                                 <Box hidden={image ? true : false}>
-                                                 <IconPhoto  color='#838383' width='130px' height='80px'/>
+                                                    {/* <IconPhoto  color='#838383' width='130px' height='80px'/> */}
+                                                    <img src={`${import.meta.env.VITE_APP_IMAGE_URL}/category/${formik.values.image}`}/>
                                                 </Box>
+                                               
                                             </Box> 
                                             {image && <img src={image}  />}     
                                         </Box>
@@ -82,13 +95,13 @@ const ModalCreateCategory : React.FC<ModalCreateProductProps> = ({isOpen, onClos
                                 </Box>
                                 <FormControl>
                                     <FormLabel color='#696666'>Category Name</FormLabel>
-                                    <Input bgColor='#EEEDED' placeholder='Category name here...' name="categoryName" value={formik.values.categoryName} onChange={formik.handleChange}/> 
+                                    <Input bgColor='#EEEDED'  name="categoryName" value={formik.values.categoryName} onChange={formik.handleChange}/> 
                                 </FormControl>
                             </Box>
                         </ModalBody>
                         <ModalFooter display='flex' gap='20px'>
                             <Button w='80px' variant='outline' color='#FF7940' border='1px solid #FF7940' type='submit'>Save</Button>
-                            <Button w='80px' bgColor='#FF7940' color='#ffffff' onClick={onClose}>Cancel</Button>
+                            <Button w='80px' bgColor='#FF7940' color='#ffffff' onClick={handleResetForm}>Cancel</Button>
                         </ModalFooter>
                     </ModalContent>
                 </form>
@@ -100,4 +113,4 @@ const ModalCreateCategory : React.FC<ModalCreateProductProps> = ({isOpen, onClos
     )
 }
 
-export default ModalCreateCategory;
+export default ModalUpdateCategory;
