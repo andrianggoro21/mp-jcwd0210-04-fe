@@ -26,39 +26,6 @@ ChartJS.register(
     Legend
   );
 
-//   export const options = {
-//     responsive: true,
-//     plugins: {
-//       legend: {
-//         position: 'top' as const,
-//       },
-//       title: {
-//         display: true,
-//         text: 'Chart.js Line Chart',
-//       },
-//     },
-//   };
-
-//   const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
-
-//   export const data = {
-//     labels,
-//     datasets: [
-//       {
-//         fill: true,
-//         label: 'Dataset 2',
-//         data: labels.map(() => Math.floor(Math.random() * 1000)),
-//         borderColor: 'rgb(53, 162, 235)',
-//         backgroundColor: 'rgba(53, 162, 235, 0.5)',
-//       },
-//     ],
-//   };
-
-//   export function AreaChart() {
-//     return <Line options={options} data={data} />;
-//   }
-
-
 export const options = {
   responsive: true,
   plugins: {
@@ -67,7 +34,13 @@ export const options = {
     },
     title: {
       display: true,
-      text: 'Chart.js Line Chart',
+      text: 'Average Transactions Day',
+    },
+    
+  },
+  scales: {
+    y: {
+      min: 0, 
     },
   },
 };
@@ -121,24 +94,33 @@ export const AreaChart = () => {
     
       const dataPoints : DataPoint[] = responseData.map((data: any) => {
         const timestamp = data.date;
+        // console.log("timestamp", timestamp);
+        
         const dateObject = new Date(timestamp);
-        const label = dateObject.getMonth() + 1;
+        // console.log("date", dateObject);
+        
+        const label = dateObject.getDate();
+        // console.log("getdate", label);
+        
   
         return {
           label,
-          price: data.totalPrice,
+          price: data?._avg_totalPrice,
         };
       });
+      // dataPoints.sort((a, b) => b.label - a.label);
 
-      const labels = dataPoints.map((dataPoint) => dataPoint.label);
-      const prices = dataPoints.map((dataPoint) => dataPoint.price);
+      const last3DataPoints = dataPoints.slice(-7);
+
+      const labels = last3DataPoints.map((dataPoint) => dataPoint.label);
+      const prices = last3DataPoints.map((dataPoint) => dataPoint.price);
 
       const newData: ChartData = {
         labels,
         datasets: [
           {
             fill: true,
-            label: 'Dataset 2',
+            label: 'Avarage Day',
             data: prices,
             borderColor: 'rgb(255, 121, 64)',
             backgroundColor: 'rgb(239, 163, 130, 0.5)',
@@ -155,5 +137,5 @@ export const AreaChart = () => {
     fetchData();
   }, []);
 
-  return <Line  options={options} data={chartData} />;
+  return <Line  options={options} data={chartData} width='500px' height='250px'/>;
 };
