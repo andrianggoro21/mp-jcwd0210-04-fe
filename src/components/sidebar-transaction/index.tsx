@@ -1,9 +1,28 @@
-import { Box, Text, Image, HStack } from "@chakra-ui/react";
+import {
+  Box,
+  Text,
+  Image,
+  Button,
+  VStack,
+  Divider,
+  AspectRatio,
+  Input,
+  HStack,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
+  Center,
+} from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import { IconBox, IconLayoutDashboard} from '@tabler/icons-react';
-import { IconChevronRight, IconChevronLeft  } from '@tabler/icons-react';
-import { BsBag } from "react-icons/bs";
+import { IconBox, IconLayoutDashboard } from "@tabler/icons-react";
+import { IconChevronRight, IconChevronLeft } from "@tabler/icons-react";
+import { BsBag, BsPersonCircle } from "react-icons/bs";
 
 const Sidebar = () => {
   const [activeUser, setActiveUser] = useState("");
@@ -13,19 +32,18 @@ const Sidebar = () => {
 
   const handleUserClick = (user: string) => {
     setActiveUser(user);
-    
   };
 
   const handleMenuClick = (menu: string) => {
     setActiveMenu(menu);
     if (showProductDropdown === true) {
-      setShowProductDropdown(false)
+      setShowProductDropdown(false);
       // setActiveSubProduct("product-list")
     } else if (activeUser === "profile") {
-      setActiveUser("")
+      setActiveUser("");
     }
   };
-  
+
   // const handleProductClick = () => {
   //   setShowProductDropdown(!showProductDropdown);
   // };
@@ -33,6 +51,8 @@ const Sidebar = () => {
   // const handleSubProductClick = (menu: string) => {
   //   setActiveSubProduct(menu);
   // };
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
     <Box boxShadow="md" w="15%" h="100vh" bgColor="#ffffff">
@@ -152,39 +172,152 @@ const Sidebar = () => {
                 backgroundColor:
                   activeUser === "profile" ? "#FFF7F3" : "transparent",
               }}
-              onClick={() => handleUserClick("profile")}
+              // onClick={() => handleUserClick("profile")}
               w="full"
               h="56px"
               gap="18px"
               alignItems="center"
               justifyContent="space-between"
             >
-              <Box display="flex" gap="18px" alignItems="center">
+              {/* <Button onClick={onOpen}>Open Modal</Button> */}
+
+              <Modal isOpen={isOpen} onClose={onClose}>
+                <ModalOverlay />
+                <ModalContent>
+                  <ModalHeader>Modal Title</ModalHeader>
+                  <ModalCloseButton />
+                  <ModalBody>
+                    {/* <Lorem count={2} /> */}
+                    <Box>
+                      <VStack align={"stretch"}>
+                        <Center>
+                          <Box p={"0 .5em"}>
+                            <VStack align={"stretch"} spacing={"1em"}>
+                              <Box>
+                                <Text>Profile Picture</Text>
+                              </Box>
+                              <Box>
+                                <AspectRatio
+                                  width={{ base: "20", md: "40" }}
+                                  ratio={1}
+                                >
+                                  <Box
+                                    borderColor="gray.300"
+                                    borderStyle="dashed"
+                                    borderWidth="2px"
+                                    borderRadius={"50%"}
+                                    shadow="sm"
+                                    _hover={{ shadow: "md" }}
+                                    display={"flex"}
+                                    alignItems={"center"}
+                                    justifyContent={"center"}
+                                  >
+                                    <Box
+                                      position="relative"
+                                      height="100%"
+                                      width="100%"
+                                      display={"flex"}
+                                      alignItems={"center"}
+                                      justifyContent={"center"}
+                                    >
+                                      <Box>
+                                        <Image />
+                                      </Box>
+                                      <Box
+                                        height="100%"
+                                        width="100%"
+                                        display="flex"
+                                        alignItems={"center"}
+                                        justifyContent={"center"}
+                                      ></Box>
+                                      <Box
+                                        height="100%"
+                                        width="100%"
+                                        position="absolute"
+                                        display={"flex"}
+                                        alignItems={"center"}
+                                        justifyContent={"center"}
+                                        opacity="0.2"
+                                      >
+                                        <BsPersonCircle fontSize={"40px"} />
+                                      </Box>
+                                      <Input
+                                        type="file"
+                                        height="100%"
+                                        width="100%"
+                                        position="absolute"
+                                        top="0"
+                                        left="0"
+                                        opacity="0"
+                                        aria-hidden="true"
+                                        accept="image/*"
+                                      />
+                                    </Box>
+                                  </Box>
+                                </AspectRatio>
+                                <Box
+                                  position={"absolute"}
+                                  display={"flex"}
+                                  gap={2}
+                                  mt={"10px"}
+                                >
+                                  <Button size={"sm"} w={"70px"}>
+                                    Remove
+                                  </Button>
+                                  <Button size={"sm"} w={"70px"}>
+                                    Submit
+                                  </Button>
+                                </Box>
+                              </Box>
+                            </VStack>
+                          </Box>
+                        </Center>
+                      </VStack>
+                    </Box>
+                  </ModalBody>
+                  <ModalFooter>
+                    <Box mt={"40px"}>
+                      <Button colorScheme="blue" mr={3} onClick={onClose}>
+                        Close
+                      </Button>
+                      <Button variant="ghost">Secondary Action</Button>
+                    </Box>
+                  </ModalFooter>
+                </ModalContent>
+              </Modal>
+              <Button onClick={onOpen}>
                 <Box
-                  w="5px"
-                  h="56px"
-                  bgColor="#FF7940"
-                  borderTopRightRadius="5px"
-                  borderBottomRightRadius="5px"
-                  style={{
-                    visibility: activeUser === "profile" ? "visible" : "hidden",
-                  }}
-                />
-                <Box
-                  w="30px"
-                  h="30px"
-                  bgColor="#D9D9D9"
-                  borderRadius="50%"
-                ></Box>
-                <Text
-                  fontFamily="Nunito"
-                  fontSize="16px"
-                  fontWeight="600"
-                  isTruncated
+                  display="flex"
+                  gap="18px"
+                  alignItems="center"
                 >
-                  Fransisca Angelica
-                </Text>
-              </Box>
+                  <Box
+                    w="5px"
+                    h="56px"
+                    bgColor="#FF7940"
+                    borderTopRightRadius="5px"
+                    borderBottomRightRadius="5px"
+                    style={{
+                      visibility:
+                        activeUser === "profile" ? "visible" : "hidden",
+                    }}
+                  />
+                  <Box
+                    w="30px"
+                    h="30px"
+                    bgColor="#D9D9D9"
+                    borderRadius="50%"
+                  ></Box>
+                  <Text
+                    fontFamily="Nunito"
+                    fontSize="16px"
+                    fontWeight="600"
+                    isTruncated
+                  >
+                    Fransisca Angelica
+                  </Text>
+                </Box>
+              </Button>
               <Box padding="0 10px 0 0">
                 {activeUser === "profile" ? (
                   <IconChevronLeft size="18px" />

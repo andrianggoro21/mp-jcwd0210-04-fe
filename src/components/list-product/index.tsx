@@ -109,7 +109,7 @@ export const ListProduct = (props: any) => {
               justifyContent={"center"}
             >
               <Image src={menu} boxSize="40px" />
-              <Text fontSize={"12px"} color={"#B4B4B4"}>
+              <Text fontSize={"12px"} color="#FF7940">
                 All Menu
               </Text>
             </Box>
@@ -277,26 +277,26 @@ export const ListProduct = (props: any) => {
           w={"200px"}
         >
           {product
-          .filter((el) => {
-            if (search === "") {
-              return el; 
-            } else if (
-              el.productName.toLowercase().icludes(search.toLowerCase())
-            ) {
-              return el;
-            }
-          })
-          .map((el, index) => (
-            <ProductCard
-              key={index}
-              {...el}
-              cart={props.cart}
-              setCart={props.setCart}
-              total={props.total}
-              setTotal={props.setTotal}
-              handlesPlus={props.handlesPlus}
-            />
-          ))}
+            .filter((el) => {
+              if (search === "") {
+                return el;
+              } else if (
+                el.productName.toLowercase().icludes(search.toLowerCase())
+              ) {
+                return el;
+              }
+            })
+            .map((el, index) => (
+              <ProductCard
+                key={index}
+                {...el}
+                cart={props.cart}
+                setCart={props.setCart}
+                total={props.total}
+                setTotal={props.setTotal}
+                handlesPlus={props.handlesPlus}
+              />
+            ))}
         </Grid>
       </VStack>
     </Box>
