@@ -1,30 +1,30 @@
 // import React from 'react';
-import axios from 'axios';
+import axios from "axios";
 import {
-    Chart as ChartJS,
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement,
-    Title,
-    Tooltip,
-    Filler,
-    Legend,
-  } from 'chart.js';
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Filler,
+  Legend,
+} from "chart.js";
 // import { useEffect, useState } from 'react';
-import { useState, useEffect, SetStateAction, Dispatch } from 'react';
-import { Line } from 'react-chartjs-2';
+import { useState, useEffect, SetStateAction, Dispatch } from "react";
+import { Line } from "react-chartjs-2";
 
 ChartJS.register(
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement,
-    Title,
-    Tooltip,
-    Filler,
-    Legend
-  );
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Filler,
+  Legend
+);
 
 //   export const options = {
 //     responsive: true,
@@ -58,16 +58,15 @@ ChartJS.register(
 //     return <Line options={options} data={data} />;
 //   }
 
-
 export const options = {
   responsive: true,
   plugins: {
     legend: {
-      position: 'top' as const,
+      position: "top" as const,
     },
     title: {
       display: true,
-      text: 'Chart.js Line Chart',
+      text: "Chart.js Line Chart",
     },
   },
 };
@@ -93,37 +92,35 @@ const initialChartData: ChartData = {
   datasets: [
     {
       fill: true,
-      label: 'Dataset 2',
+      label: "Dataset 2",
       data: [],
-      borderColor: 'rgb(53, 162, 235)',
-      backgroundColor: 'rgba(53, 162, 235, 0.5)',
+      borderColor: "rgb(53, 162, 235)",
+      backgroundColor: "rgba(53, 162, 235, 0.5)",
     },
   ],
 };
 
 export const AreaChart = () => {
-  const [chartData, setChartData]: [ChartData, Dispatch<SetStateAction<ChartData>>] = useState(
-    initialChartData
-  );
+  const [chartData, setChartData]: [
+    ChartData,
+    Dispatch<SetStateAction<ChartData>>
+  ] = useState(initialChartData);
 
   const fetchData = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/report/');
+      const response = await axios.get("http://localhost:8080/report/");
       const responseData = response?.data?.data;
-      console.log(responseData);
-      
 
       if (!responseData) {
-        console.error('Invalid response data');
+        console.error("Invalid response data");
         return;
       }
 
-    
-      const dataPoints : DataPoint[] = responseData.map((data: any) => {
+      const dataPoints: DataPoint[] = responseData.map((data: any) => {
         const timestamp = data.date;
         const dateObject = new Date(timestamp);
         const label = dateObject.getMonth() + 1;
-  
+
         return {
           label,
           price: data.totalPrice,
@@ -138,16 +135,16 @@ export const AreaChart = () => {
         datasets: [
           {
             fill: true,
-            label: 'Dataset 2',
+            label: "Dataset 2",
             data: prices,
-            borderColor: 'rgb(53, 162, 235)',
-            backgroundColor: 'rgba(53, 162, 235, 0.5)',
+            borderColor: "rgb(53, 162, 235)",
+            backgroundColor: "rgba(53, 162, 235, 0.5)",
           },
         ],
       };
       setChartData(newData);
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error("Error fetching data:", error);
     }
   };
 

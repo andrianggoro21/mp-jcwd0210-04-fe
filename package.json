@@ -19,6 +19,8 @@
     "@tabler/icons-react": "^2.40.0",
     "axios": "^1.6.1",
     "formik": "^2.4.5",
+    "chart.js": "^4.4.0",
+    "faker": "^6.6.6",
     "framer-motion": "^10.16.4",
     "react": "^18.2.0",
     "react-chartjs-2": "^5.2.0",
@@ -26,7 +28,8 @@
     "react-icons": "^4.11.0",
     "react-redux": "^8.1.3",
     "react-router-dom": "^6.18.0",
-    "redux": "^4.2.1"
+    "redux": "^4.2.1",
+    "redux-thunk": "^2.4.2"
   },
   "devDependencies": {
     "@types/faker": "^6.6.9",
@@ -39,6 +42,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.3",
     "typescript": "^5.2.2",
+    "redux-devtools-extension": "^2.13.9",
     "vite": "^4.4.5"
   }
 }
