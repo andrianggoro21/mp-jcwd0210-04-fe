@@ -1,0 +1,19 @@
+.regisHere {
+  color: #ff7940 !important;
+}
+
+.bg-regis {
+  background-position: left;
+  object-fit: cover;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-image: url("../../assets/auth/registrationBg.png");
+  height: auto;
+  width: 100%;
+}
+
+.content-regis {
+  background-color: #ffffff;
+  width: 50%;
+  margin-left: auto;
+}
