@@ -6,11 +6,10 @@ import {
   Spacer,
   Button,
   Flex,
+  Divider,
   Center,
   Grid,
   VStack,
-} from "@chakra-ui/react";
-import {
   Modal,
   ModalOverlay,
   ModalContent,
@@ -38,7 +37,7 @@ export default function Cart(props: any) {
   const [qris, setQris] = useState(false);
   const [change, setChange] = useState(false);
   const [debit, setDebit] = useState(false);
-  const [userId, setUserId] = useState(1);
+  const [userId, setUserId] = useState(2);
   const toast = useToast();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -49,7 +48,7 @@ export default function Cart(props: any) {
     try {
       props?.cart?.map(async (el: any) => {
         const res = await axios.post(
-          "http://localhost:8080/transaction_details/create",
+          "http://localhost:8080/transaction_details",
           {
             productId: el.id,
             transactionId: id,
@@ -74,6 +73,8 @@ export default function Cart(props: any) {
     paymentAmount: number,
     paymentChange: number
   ) => {
+    // console.log(transaction);
+
     console.log("totalQty", totalQuantity);
     console.log("totalPrice", totalPrice);
     console.log("payment_methodId", payment_methodId);
@@ -112,28 +113,25 @@ export default function Cart(props: any) {
         throw new Error("Error");
       }
 
-      if (paymentChange <= 0) {
-        toast({
-          title: "Can't Process Transaction",
-          description: "Insufficient payment !",
-          status: "warning",
-          duration: 2000,
-          position: "top-right",
-        });
-        throw new Error("Error");
-      }
+      // if (paymentChange <= 0) {
+      //   toast({
+      //     title: "Can't Process Transaction",
+      //     description: "Insufficient payment !",
+      //     status: "warning",
+      //     duration: 2000,
+      //     position: "top-right",
+      //   });
+      //   throw new Error("Error");
+      // }
 
-      const res = await axios.post(
-        "http://localhost:8080/transactions/create",
-        {
-          userId,
-          totalQuantity,
-          totalPrice,
-          payment_methodId,
-          paymentAmount,
-          paymentChange,
-        }
-      );
+      const res = await axios.post("http://localhost:8080/transactions", {
+        userId,
+        totalQuantity,
+        totalPrice,
+        payment_methodId,
+        paymentAmount,
+        paymentChange,
+      });
       console.log("dataTrans", res?.data?.data);
 
       await transaction_details(res?.data?.data?.id);
@@ -356,7 +354,10 @@ export default function Cart(props: any) {
               </Box>
             </Center>
           </ModalBody>
-
+          <Divider />
+          <Box p={"1em"}>
+            <Text textAlign={"left"}>Payment Change : {paymentChange} </Text>
+          </Box>
           <ModalFooter mt={"30px"}>
             <Button
               bgColor={"#FF7940"}
