@@ -22,10 +22,9 @@ import BodyReportCashier from './components/reportCashier/body';
 import FooterReportCashier from './components/reportCashier/footer';
 import HeaderStatistic from './components/statistic/header';
 import BodyStatistic from './components/statistic/body';
-import FooterStatistic from './components/statistic/footer';
+// import FooterStatistic from './components/statistic/footer';
 import HeaderDashboard from './components/dashboard/header';
 import BodyDashboard from './components/dashboard/body';
-import FooterDashboard from './components/dashboard/footer';
 import HeaderTransactionProduct from './components/transactionProductDetail/header';
 import BodyTransactionProduct from './components/transactionProductDetail/body';
 import FooterTransactionProduct from './components/transactionProductDetail/footer';
@@ -33,6 +32,7 @@ import HeaderCashierReportTable from './components/cashierReportTable/header';
 import BodyCashierReportTable from './components/cashierReportTable/body';
 import FooterCashierReportTable from './components/cashierReportTable/footer';
 
+import Transaction from './transaction';
 
 function App() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -134,6 +134,7 @@ function App() {
   return (
     <>
       <Routes>
+        <Route path='/transaction' element={<Transaction/>} />
         <Route path='/' element={<AdminPage viewHeader={<HeaderDashboard/>} viewBody={<BodyDashboard/>}/>} />
         <Route path='/user-management' element={<AdminPage viewHeader={<HeaderUserManagement/>} viewBody={<BodyUserManagement/>} viewFooter={<FooterUserManagement/>}/>} />
         <Route path='/manage-category'element={<AdminPage viewHeader={<HeaderManageCategory/>} viewBody={<BodyManageCategory />}  />} />
@@ -147,7 +148,7 @@ function App() {
       </Routes>
   
     </>
-  )
+  );
 }
 
-export default App
+export default App;
