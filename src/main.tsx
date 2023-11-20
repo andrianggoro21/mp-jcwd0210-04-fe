@@ -6,13 +6,16 @@ import { ChakraProvider } from "@chakra-ui/react";
 // import { Provider } from 'react-redux'
 import { BrowserRouter } from "react-router-dom";
 import theme from "./themes/index.ts";
+import { UserProvider } from "./pages/roles/index.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <>
     {/* <Provider > */}
     <ChakraProvider theme={theme}>
       <BrowserRouter>
-        <App />
+        <UserProvider>
+          <App />
+        </UserProvider>
       </BrowserRouter>
     </ChakraProvider>
     {/* </Provider> */}

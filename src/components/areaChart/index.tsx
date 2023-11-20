@@ -91,7 +91,6 @@ export const AreaChart = () => {
         return;
       }
 
-    
       const dataPoints : DataPoint[] = responseData.map((data: any) => {
         const timestamp = data.date;
         // console.log("timestamp", timestamp);

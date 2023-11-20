@@ -1,9 +1,10 @@
 import { Box, Text, Image, Stack, HStack, VStack, Button } from "@chakra-ui/react";
 import { Menu, MenuButton, MenuList, MenuItem } from '@chakra-ui/react';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { IconBox, IconLayoutDashboard, IconUser, IconChartPie, IconChevronDown, IconChevronUp } from '@tabler/icons-react';
 import { IconChevronRight, IconChevronLeft  } from '@tabler/icons-react';
+import { useUserRole } from "../../pages/roles";
 
 const Sidebar = () => {
   const [activeUser, setActiveUser] = useState("");
@@ -12,6 +13,7 @@ const Sidebar = () => {
   const [activeSubProduct, setActiveSubProduct] = useState("");
   const [showReportDropdown, setShowReportDropdown] = useState(false);
   const [activeSubReport, setActiveSubReport] = useState("");
+  const navigate = useNavigate();
 
   const handleUserClick = (user: string) => {
     setActiveUser(user);
@@ -45,6 +47,13 @@ const Sidebar = () => {
 
   const handleSubReportClick = (menu: string) => {
     setActiveSubReport(menu);
+  };
+
+  const { setRole } = useUserRole();
+  const handleLogout = () => {
+    setRole('');
+    navigate("/login")
+   
   };
   return (
     <Box w="15%" h="100vh" bgColor="#ffffff" position="fixed" >
@@ -143,7 +152,13 @@ const Sidebar = () => {
                 </Box>
             </HStack>
           </Link> 
-        </Box>             
+          <Box w='full' display='flex' alignItems='center' justifyContent='center'>
+            <Button onClick={() => handleLogout()}>
+                Logout
+            </Button>
+        </Box>    
+        </Box>
+                 
       </Box>
       
       

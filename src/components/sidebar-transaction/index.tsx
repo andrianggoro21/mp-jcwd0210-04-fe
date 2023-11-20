@@ -64,7 +64,7 @@ const Sidebar = () => {
         paddingBottom="32px"
       >
         <Box display="flex" flexDirection="column" gap="45px">
-          <Link to={""}>
+          <Link to={"/transaction"}>
             <HStack spacing="0" padding="32px 0 0 24px">
               <Image src="../../../public/images/logo.png" />
               <Text
@@ -78,7 +78,7 @@ const Sidebar = () => {
             </HStack>
           </Link>
           <Box display="flex" flexDirection="column" gap="10px">
-            <Link to={""}>
+            <Link to={"/transaction"}>
               <HStack
                 style={{
                   color: activeMenu === "dash" ? "#FF7940" : "#707070",
@@ -106,7 +106,7 @@ const Sidebar = () => {
                 </Text>
               </HStack>
             </Link>
-            <Link to={""}>
+            <Link to={"/cashier/product-list"}>
               <HStack
                 style={{
                   color: activeMenu === "dash" ? "#FF7940" : "#707070",
@@ -134,7 +134,7 @@ const Sidebar = () => {
                 </Text>
               </HStack>
             </Link>
-            <Link to={""}>
+            <Link to={"/cashier/report-transaction"}>
               <HStack
                 style={{
                   color: activeMenu === "dash" ? "#FF7940" : "#707070",

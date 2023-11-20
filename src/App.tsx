@@ -1,5 +1,5 @@
-import Reports from './pages/report';
-import { useState } from 'react';
+
+import { useState, useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import AdminPage from './pages/AdminPage';
 import HeaderManageProduct from './components/manageProduct/header';
@@ -32,7 +32,16 @@ import HeaderCashierReportTable from './components/cashierReportTable/header';
 import BodyCashierReportTable from './components/cashierReportTable/body';
 import FooterCashierReportTable from './components/cashierReportTable/footer';
 
+
 import Transaction from './transaction';
+import { ListProduct } from './components/list-product';
+import Cart from './components/cart';
+import CashierPage from './pages/CashierPage';
+import Login from './pages/login';
+import { useUserRole } from './pages/roles';
+import { useNavigate } from 'react-router-dom';
+
+
 
 function App() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -48,6 +57,10 @@ function App() {
   const [currentPageCashier, setCurrentPageCashier] = useState(1);
   const [currentPageReportTransaction, setCurrentPageReportTransaction] = useState(1);
   const [inputSearchReportTransaction, setInputSearchReportTransaction] = useState("");
+  // const [exportedData, setExportedData] = useState(null);
+
+  const { userRole } = useUserRole();
+  const navigate = useNavigate();
 
   const handlePageChange = (newPage: number, event?: React.MouseEvent<HTMLButtonElement>) => {
     if (event) {
@@ -131,23 +144,50 @@ function App() {
     }
     setCurrentPageCashier(newPage);
   }
-  return (
+
+  useEffect(() => {
+    if (!userRole) {
+      // Check if the user is not on the login page to avoid continuous redirects
+      if (window.location.pathname !== '/login') {
+        // Redirect to the login page when the user logs out
+        navigate('/login');
+      }
+    }
+  }, [userRole, navigate]);
+
+  return ( 
     <>
-      <Routes>
-        <Route path='/transaction' element={<Transaction/>} />
-        <Route path='/' element={<AdminPage viewHeader={<HeaderDashboard/>} viewBody={<BodyDashboard/>}/>} />
-        <Route path='/user-management' element={<AdminPage viewHeader={<HeaderUserManagement/>} viewBody={<BodyUserManagement/>} viewFooter={<FooterUserManagement/>}/>} />
-        <Route path='/manage-category'element={<AdminPage viewHeader={<HeaderManageCategory/>} viewBody={<BodyManageCategory />}  />} />
-        <Route path='/manage-product' element={<AdminPage viewHeader={<HeaderManageProduct inputSearch={handleSearchManageProduct} />} viewBody={<BodyManageProduct currentPage={currentPageManageProduct} onPageChange={handlePageChangeManageProduct} inputSearch={inputSearchManageProduct} />} viewFooter={<FooterManageProduct currentPage={currentPageManageProduct} onPageChange={handlePageChangeManageProduct} />} />} />
-        <Route path='/product-list' element={<AdminPage viewHeader={<HeaderProductList inputSearch={handleSearch} />} viewBody={<BodyProductList currentPage={currentPage} onPageChange={handlePageChange} inputSearch={inputSearch}/>} viewFooter={<FooterProductList currentPage={currentPage} onPageChange={handlePageChange}/>}/>} />
-        <Route path='/report-transaction' element={<AdminPage viewHeader={<HeaderReportTransaction onDateChange={handleDateChange} />} viewBody={<BodyReportTransaction startDate={startDate} endDate={endDate} currentPage={currentPageReportTransaction} onPageChange={handlePageChangeReportTransaction}/>} viewFooter={<FooterReportTransaction currentPage={currentPageReportTransaction} onPageChange={handlePageChangeReportTransaction} />}/>} />
-        <Route path='/report-cashier' element={<AdminPage viewHeader={<HeaderReportCashier inputSearch={handleSearchUserReport} />} viewBody={<BodyReportCashier currentPage={currentPageUserReport} onPageChange={handlePageChangeUserReport} inputSearch={inputSearchUsersReport} />} viewFooter={<FooterReportCashier currentPage={currentPageUserReport} onPageChange={handlePageChangeUserReport} />}/>} />
-        <Route path='/report-statistic' element={<AdminPage viewHeader={<HeaderStatistic />} viewBody={<BodyStatistic/>} />} />
-        <Route path='/transaction-product' element={<AdminPage viewHeader={<HeaderTransactionProduct />} viewBody={<BodyTransactionProduct/>} viewFooter={<FooterTransactionProduct/>}/>} />
-        <Route path='/transaction-cashier' element={<AdminPage viewHeader={<HeaderCashierReportTable onDateChange={handleDateChangeCashier} />} viewBody={<BodyCashierReportTable startDate={startDateCashier} endDate={endDateCashier} currentPage={currentPageCashier} onPageChange={handlePageChangeCashier}/>} viewFooter={<FooterCashierReportTable currentPage={currentPageCashier} onPageChange={handlePageChangeCashier}/>}/>} />
-      </Routes>
+    
+ 
+        <Routes>
+        <Route path='/login' element={<Login/>} />
+
+          {userRole === 'cashier' && (
+            <>
+                <Route path='/transaction' element={<Transaction/>} />
+                <Route path='/cashier/product-list' element={<CashierPage viewHeader={<HeaderProductList inputSearch={handleSearch} />} viewBody={<BodyProductList currentPage={currentPage} onPageChange={handlePageChange} inputSearch={inputSearch}/>} viewFooter={<FooterProductList currentPage={currentPage} onPageChange={handlePageChange}/>}/>} />
+                <Route path='/cashier/report-transaction' element={<CashierPage viewHeader={<HeaderReportTransaction onDateChange={handleDateChange} />} viewBody={<BodyReportTransaction startDate={startDate} endDate={endDate} currentPage={currentPageReportTransaction} onPageChange={handlePageChangeReportTransaction} />} viewFooter={<FooterReportTransaction currentPage={currentPageReportTransaction} onPageChange={handlePageChangeReportTransaction} />}/>} />
+            </>
+        )}
+
+          {userRole === 'admin' && (
+            <>
+                <Route path='/' element={<AdminPage viewHeader={<HeaderDashboard/>} viewBody={<BodyDashboard/>}/>} />
+                <Route path='/user-management' element={<AdminPage viewHeader={<HeaderUserManagement/>} viewBody={<BodyUserManagement/>} viewFooter={<FooterUserManagement/>}/>} />
+                <Route path='/manage-category'element={<AdminPage viewHeader={<HeaderManageCategory/>} viewBody={<BodyManageCategory />}  />} />
+                <Route path='/manage-product' element={<AdminPage viewHeader={<HeaderManageProduct inputSearch={handleSearchManageProduct} />} viewBody={<BodyManageProduct currentPage={currentPageManageProduct} onPageChange={handlePageChangeManageProduct} inputSearch={inputSearchManageProduct} />} viewFooter={<FooterManageProduct currentPage={currentPageManageProduct} onPageChange={handlePageChangeManageProduct} />} />} />
+                <Route path='/product-list' element={<AdminPage viewHeader={<HeaderProductList inputSearch={handleSearch} />} viewBody={<BodyProductList currentPage={currentPage} onPageChange={handlePageChange} inputSearch={inputSearch}/>} viewFooter={<FooterProductList currentPage={currentPage} onPageChange={handlePageChange}/>}/>} />
+                <Route path='/report-transaction' element={<AdminPage viewHeader={<HeaderReportTransaction onDateChange={handleDateChange} />} viewBody={<BodyReportTransaction startDate={startDate} endDate={endDate} currentPage={currentPageReportTransaction} onPageChange={handlePageChangeReportTransaction} />} viewFooter={<FooterReportTransaction currentPage={currentPageReportTransaction} onPageChange={handlePageChangeReportTransaction} />}/>} />
+                <Route path='/report-cashier' element={<AdminPage viewHeader={<HeaderReportCashier inputSearch={handleSearchUserReport} />} viewBody={<BodyReportCashier currentPage={currentPageUserReport} onPageChange={handlePageChangeUserReport} inputSearch={inputSearchUsersReport} />} viewFooter={<FooterReportCashier currentPage={currentPageUserReport} onPageChange={handlePageChangeUserReport} />}/>} />
+                <Route path='/report-statistic' element={<AdminPage viewHeader={<HeaderStatistic />} viewBody={<BodyStatistic/>} />} />
+                <Route path='/transaction-product' element={<AdminPage viewHeader={<HeaderTransactionProduct />} viewBody={<BodyTransactionProduct/>} viewFooter={<FooterTransactionProduct/>}/>} />
+                <Route path='/transaction-cashier' element={<AdminPage viewHeader={<HeaderCashierReportTable onDateChange={handleDateChangeCashier} />} viewBody={<BodyCashierReportTable startDate={startDateCashier} endDate={endDateCashier} currentPage={currentPageCashier} onPageChange={handlePageChangeCashier}/>} viewFooter={<FooterCashierReportTable currentPage={currentPageCashier} onPageChange={handlePageChangeCashier}/>}/>} />
+            </>
+          )}
+        </Routes>
+ 
+        </>
   
-    </>
   );
 }
 

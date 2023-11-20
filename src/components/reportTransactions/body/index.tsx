@@ -7,7 +7,40 @@ import { IconPrinter, IconDownload  } from '@tabler/icons-react';
 import axios from 'axios';
 import { useToast } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
+import * as XLSX from 'xlsx';
+import * as FileSaver from 'file-saver';
 
+interface Product {
+    id: number;
+    price: string;
+    productName: string;
+    // Add other necessary properties
+  }
+interface TransactionDetail {
+    id: number;
+    productId: number;
+    transactionId: number;
+    quantity: number;
+    price: string;
+    product: Product[];
+    // Add other necessary properties
+  }
+  
+  interface User {
+    id: number;
+    username: string;
+    // Add other necessary properties
+  }
+  
+  interface Transaction {
+    id: number;
+    date: string;
+    totalQuantity: number;
+    totalPrice: string;
+    transaction_details: TransactionDetail[];
+    user: User;
+    // Add other necessary properties
+  }
 interface BodyReportTransactionProps {
     startDate: string;
     endDate: string;
@@ -15,13 +48,9 @@ interface BodyReportTransactionProps {
     onPageChange: (newPage: number, event?: React.MouseEvent<HTMLButtonElement>) => void
 }
 
-const BodyReportTransaction : React.FC<BodyReportTransactionProps> = ({ startDate, endDate, currentPage, onPageChange }) => {
-    const [transaction, setTransaction] = useState([])
+const BodyReportTransaction : React.FC<BodyReportTransactionProps  > = ({ startDate, endDate, currentPage, onPageChange }) => {
+    const [transaction, setTransaction] = useState<Transaction[]>([])
     const toast = useToast()
-    // console.log("startDate", startDate);
-    // console.log("endDate", endDate);
-    
-    
 
     const getTransactionAll = async () => {
         try {
@@ -34,11 +63,36 @@ const BodyReportTransaction : React.FC<BodyReportTransactionProps> = ({ startDat
                     endDate: endDate
                 }
             });
+            console.log(res?.data?.data);
+            
             setTransaction(res?.data?.data)
             // window.location.reload();
         } catch (err : any) {
             toast({ title: err?.response?.data, status: 'error', position: 'top', duration: 2000, isClosable: true})
         }
+    };
+
+    // const exportToExcel = (transactionId: number) => {
+    //     const filteredTransaction = transaction.filter((item) => item.id === transactionId);
+    //     const ws = XLSX.utils.json_to_sheet(filteredTransaction);
+    //     const wb = XLSX.utils.book_new();
+    //     XLSX.utils.book_append_sheet(wb, ws, 'Transactions');
+    //     XLSX.writeFile(wb, `transactions_${transactionId}.xlsx`);
+    //   };
+
+    const exportToExcel = (transactionId: number) => {
+        // Filter transactions based on the given transactionId
+        const filteredTransaction = transaction.filter((item) => item.id === transactionId);
+    
+        // Convert the filtered data to an Excel sheet
+        const ws = XLSX.utils.json_to_sheet(filteredTransaction);
+    
+        // Create a new Excel workbook and append the sheet to it
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'Transactions');
+    
+        // Save the Excel file with a specific filename based on the transactionId
+        XLSX.writeFile(wb, `transactions_${transactionId}.xlsx`);
     };
 
     useEffect(() => {
@@ -77,7 +131,7 @@ const BodyReportTransaction : React.FC<BodyReportTransactionProps> = ({ startDat
                                     
                                     <Button size='sm' w='100px' variant='outline' color='#FF7940' border='1px solid #FF7940'>View Invoice</Button>
                                     {/* <Button size='sm' w='50px' variant='outline' color='#FF7940' border='1px solid #FF7940'><IconPrinter stroke={1.5}/></Button> */}
-                                    <Button size='sm' w='50px' variant='outline' color='#FF7940' border='1px solid #FF7940'><IconDownload stroke={1.5}/></Button>
+                                    <Button className='exportTransactionId' size='sm' w='50px' variant='outline' color='#FF7940' border='1px solid #FF7940' onClick={() => exportToExcel(item.id)}><IconDownload stroke={1.5}/></Button>
                                 </Box>
                             </Td>
                         </Tr>
