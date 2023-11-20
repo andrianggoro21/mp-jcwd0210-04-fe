@@ -1,11 +1,12 @@
 import { Box, Text, Button } from '@chakra-ui/react'
 
-interface FooterReportTransactionProps {
+
+interface FooterReportCashierTableProps {
     currentPage: number;
     onPageChange: (newPage: number) => void;
   }
 
-const FooterReportTransaction : React.FC<FooterReportTransactionProps>  = ({ currentPage, onPageChange }) => {
+const FooterCashierReportTable : React.FC<FooterReportCashierTableProps> = ({ currentPage, onPageChange }) => {
     return (
         // <Box display='flex' alignItems='center' justifyContent='space-between'>
         //    <Box>
@@ -28,7 +29,8 @@ const FooterReportTransaction : React.FC<FooterReportTransactionProps>  = ({ cur
             <Button size='sm' bgColor='#FF7940' color='#ffffff' onClick={() => onPageChange(currentPage + 1)}>Next</Button>
             </Box>
         </Box>
+        
     )
 }
 
-export default FooterReportTransaction;
+export default FooterCashierReportTable;

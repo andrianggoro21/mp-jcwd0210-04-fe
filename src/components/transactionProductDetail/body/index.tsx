@@ -11,11 +11,12 @@ const BodyTransactionProduct  = () => {
     const [transactionDetail, setTransactionDetail] = useState([])
     const toast = useToast()
     const transactionId = localStorage.getItem("transactionId")
+    const idTransaction = localStorage.getItem("idTransaction")
     
 
     const getTransactionDetail = async () => {
         try {
-            const res = await axios.get(`http://localhost:8080/report/detail/${transactionId}`);
+            const res = await axios.get(`http://localhost:8080/report/detail/${transactionId||idTransaction}`);
             console.log(res?.data?.data);
             
             setTransactionDetail(res?.data?.data)

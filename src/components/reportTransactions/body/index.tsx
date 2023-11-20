@@ -11,9 +11,11 @@ import { Link } from 'react-router-dom';
 interface BodyReportTransactionProps {
     startDate: string;
     endDate: string;
+    currentPage: number;
+    onPageChange: (newPage: number, event?: React.MouseEvent<HTMLButtonElement>) => void
 }
 
-const BodyReportTransaction : React.FC<BodyReportTransactionProps> = ({ startDate, endDate }) => {
+const BodyReportTransaction : React.FC<BodyReportTransactionProps> = ({ startDate, endDate, currentPage, onPageChange }) => {
     const [transaction, setTransaction] = useState([])
     const toast = useToast()
     // console.log("startDate", startDate);
@@ -23,8 +25,11 @@ const BodyReportTransaction : React.FC<BodyReportTransactionProps> = ({ startDat
 
     const getTransactionAll = async () => {
         try {
+            const pageToFetch = Math.max(currentPage, 1);
             const res = await axios.get(`http://localhost:8080/report/all`,{
                 params: {
+                    page: pageToFetch,
+                    pageSize: 7,
                     startDate: startDate,
                     endDate: endDate
                 }
@@ -40,7 +45,7 @@ const BodyReportTransaction : React.FC<BodyReportTransactionProps> = ({ startDat
         
         getTransactionAll();
         
-    }, [endDate]);
+    }, [onPageChange, endDate]);
     
     return (
         <Box>

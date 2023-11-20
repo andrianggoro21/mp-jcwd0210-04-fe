@@ -21,13 +21,19 @@ interface Product {
 
 const BodyDashboard = () => {
     const [bestSeller, setBestSeller] = useState<Product[]>([]);
+    const [totalAmount, setTotalAmount] = useState<number>(0);
+    const [totalQuantity, setTotalQuantity] = useState<number>(0);
     const toast = useToast()
+
 
 
     const getBestSeller = async () => {
         try {
             const res = await axios.get(`http://localhost:8080/report/best-seller`);
             console.log(res?.data?.data);
+
+            let updatedTotalQuantity = 0;
+            let updatedTotalAmount = 0;
 
             const updatedBestSeller = res?.data?.data?.map((product: Product) => {
                 const sortedTransactionDetails = product.transaction_details.sort(
@@ -39,13 +45,23 @@ const BodyDashboard = () => {
                   (sum: number, transaction: any) => sum + transaction.quantity,
                   0
                 );
+
+                const totalAmount = sortedTransactionDetails.reduce(
+                    (sum: number, transaction: any) => sum + parseFloat(transaction.price),
+                    0
+                  );
+
+                  updatedTotalQuantity += totalQuantity;
+                  updatedTotalAmount += totalAmount;
+  
         
                 const averageQuantityPerDay =
                   totalQuantity / sortedTransactionDetails.length || 0;
         
                 return {
                   ...product,
-                  totalQuantity,
+                  totalQuantity: totalQuantity,
+                  totalAmount: totalAmount,
                   averageQuantityPerDay,
                 };
               });
@@ -55,7 +71,9 @@ const BodyDashboard = () => {
                   new Date(b.transaction_details[0]?.transaction?.date).getTime() -
                   new Date(a.transaction_details[0]?.transaction?.date).getTime()
               );
-        
+                
+              setTotalQuantity(updatedTotalQuantity);
+                setTotalAmount(updatedTotalAmount);
               setBestSeller(sortedBestSeller);
             
             // setBestSeller(res?.data?.data)
@@ -90,7 +108,7 @@ const BodyDashboard = () => {
                                     </Box>
                                     <Box display='flex' justifyContent='space-between'>
                                         <Text  color='#FFFFFF'  fontSize='24px' fontWeight='600'>
-                                            Rp 5.000.000
+                                            Rp {totalAmount.toFixed(2)}
                                         </Text>
                                         <Box display='flex' alignItems='center' gap='10px'>
                                             <IconTrendingUp color='#FFFFFF'/>
@@ -121,7 +139,7 @@ const BodyDashboard = () => {
                                     </Box>
                                     <Box display='flex' justifyContent='space-between'>
                                         <Text  color='#FFFFFF'  fontSize='24px' fontWeight='600'>
-                                            100 products
+                                            {totalQuantity} products
                                         </Text>
                                         <Box display='flex' alignItems='center' gap='10px'>
                                             <IconTrendingUp color='#FFFFFF'/>

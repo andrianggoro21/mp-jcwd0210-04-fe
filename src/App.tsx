@@ -29,6 +29,10 @@ import FooterDashboard from './components/dashboard/footer';
 import HeaderTransactionProduct from './components/transactionProductDetail/header';
 import BodyTransactionProduct from './components/transactionProductDetail/body';
 import FooterTransactionProduct from './components/transactionProductDetail/footer';
+import HeaderCashierReportTable from './components/cashierReportTable/header';
+import BodyCashierReportTable from './components/cashierReportTable/body';
+import FooterCashierReportTable from './components/cashierReportTable/footer';
+
 
 function App() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -39,6 +43,11 @@ function App() {
   const [inputSearchManageProduct, setInputSearchManageProduct] = useState("");
   const [currentPageUserReport, setCurrentPageUserReport] = useState(1);
   const [inputSearchUsersReport, setInputSearchUserReport] = useState("")
+  const [startDateCashier, setStartDateCashier] = useState(''); 
+  const [endDateCashier, setEndDateCashier] = useState('');
+  const [currentPageCashier, setCurrentPageCashier] = useState(1);
+  const [currentPageReportTransaction, setCurrentPageReportTransaction] = useState(1);
+  const [inputSearchReportTransaction, setInputSearchReportTransaction] = useState("");
 
   const handlePageChange = (newPage: number, event?: React.MouseEvent<HTMLButtonElement>) => {
     if (event) {
@@ -91,6 +100,37 @@ function App() {
     }
    setInputSearchUserReport(username)
   };
+
+   // report transaction
+   const handlePageChangeReportTransaction = (newPage: number, event?: React.MouseEvent<HTMLButtonElement>) => {
+    if (event) {
+      event.preventDefault();
+    }
+    setCurrentPageReportTransaction(newPage);
+  }
+
+  const handleSearchReportTransaction = (username: string, event?: React.MouseEvent<HTMLButtonElement>) => {
+    if (event) {
+      event.preventDefault();
+    }
+   setInputSearchReportTransaction(username)
+  };
+
+  // date change cashier
+  const handleDateChangeCashier = (newStartDate: string, newEndDate: string, event?: React.MouseEvent<HTMLButtonElement>) => {
+    if (event) {
+      event.preventDefault();
+    }
+    setEndDateCashier(newEndDate);
+    setStartDateCashier(newStartDate);
+   
+  };
+  const handlePageChangeCashier = (newPage: number, event?: React.MouseEvent<HTMLButtonElement>) => {
+    if (event) {
+      event.preventDefault();
+    }
+    setCurrentPageCashier(newPage);
+  }
   return (
     <>
       <Routes>
@@ -99,10 +139,11 @@ function App() {
         <Route path='/manage-category'element={<AdminPage viewHeader={<HeaderManageCategory/>} viewBody={<BodyManageCategory />}  />} />
         <Route path='/manage-product' element={<AdminPage viewHeader={<HeaderManageProduct inputSearch={handleSearchManageProduct} />} viewBody={<BodyManageProduct currentPage={currentPageManageProduct} onPageChange={handlePageChangeManageProduct} inputSearch={inputSearchManageProduct} />} viewFooter={<FooterManageProduct currentPage={currentPageManageProduct} onPageChange={handlePageChangeManageProduct} />} />} />
         <Route path='/product-list' element={<AdminPage viewHeader={<HeaderProductList inputSearch={handleSearch} />} viewBody={<BodyProductList currentPage={currentPage} onPageChange={handlePageChange} inputSearch={inputSearch}/>} viewFooter={<FooterProductList currentPage={currentPage} onPageChange={handlePageChange}/>}/>} />
-        <Route path='/report-transaction' element={<AdminPage viewHeader={<HeaderReportTransaction onDateChange={handleDateChange} />} viewBody={<BodyReportTransaction startDate={startDate} endDate={endDate} />} viewFooter={<FooterReportTransaction/>}/>} />
+        <Route path='/report-transaction' element={<AdminPage viewHeader={<HeaderReportTransaction onDateChange={handleDateChange} />} viewBody={<BodyReportTransaction startDate={startDate} endDate={endDate} currentPage={currentPageReportTransaction} onPageChange={handlePageChangeReportTransaction}/>} viewFooter={<FooterReportTransaction currentPage={currentPageReportTransaction} onPageChange={handlePageChangeReportTransaction} />}/>} />
         <Route path='/report-cashier' element={<AdminPage viewHeader={<HeaderReportCashier inputSearch={handleSearchUserReport} />} viewBody={<BodyReportCashier currentPage={currentPageUserReport} onPageChange={handlePageChangeUserReport} inputSearch={inputSearchUsersReport} />} viewFooter={<FooterReportCashier currentPage={currentPageUserReport} onPageChange={handlePageChangeUserReport} />}/>} />
         <Route path='/report-statistic' element={<AdminPage viewHeader={<HeaderStatistic />} viewBody={<BodyStatistic/>} />} />
         <Route path='/transaction-product' element={<AdminPage viewHeader={<HeaderTransactionProduct />} viewBody={<BodyTransactionProduct/>} viewFooter={<FooterTransactionProduct/>}/>} />
+        <Route path='/transaction-cashier' element={<AdminPage viewHeader={<HeaderCashierReportTable onDateChange={handleDateChangeCashier} />} viewBody={<BodyCashierReportTable startDate={startDateCashier} endDate={endDateCashier} currentPage={currentPageCashier} onPageChange={handlePageChangeCashier}/>} viewFooter={<FooterCashierReportTable currentPage={currentPageCashier} onPageChange={handlePageChangeCashier}/>}/>} />
       </Routes>
   
     </>
