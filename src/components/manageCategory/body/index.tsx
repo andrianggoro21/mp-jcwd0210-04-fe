@@ -13,6 +13,12 @@ interface Category {
     image: string;
   }
 
+//   interface BodyManageCategoryProps {
+//     currentPage: number;
+//     onPageChange: (newPage: number) => void;
+//     inputSearch: string;
+//   }
+
 const BodyManageCategory  = () => {
     const { isOpen, onOpen, onClose } = useDisclosure()
     const [selectAll, setSelectAll] = useState(false);

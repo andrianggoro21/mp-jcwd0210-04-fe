@@ -19,12 +19,10 @@ const BodyProductList : React.FC<BodyProductListProps> = ({currentPage, onPageCh
     const [price, setPrice] = useState<number | undefined>(undefined);
     const toast = useToast()
     
-    
-
     const getProductAll = async () => {
         try {
-            console.log("alpha", alphabet);
-            console.log("price", price);
+            // console.log("alpha", alphabet);
+            // console.log("price", price);
             const pageToFetch = Math.max(currentPage, 1);
             const res = await axios.get(`http://localhost:8080/product/pagination`, {
                 params: {

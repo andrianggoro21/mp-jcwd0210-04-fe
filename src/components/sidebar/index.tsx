@@ -9,9 +9,9 @@ const Sidebar = () => {
   const [activeUser, setActiveUser] = useState("");
   const [activeMenu, setActiveMenu] = useState("dash");
   const [showProductDropdown, setShowProductDropdown] = useState(false);
-  const [activeSubProduct, setActiveSubProduct] = useState("product-list");
+  const [activeSubProduct, setActiveSubProduct] = useState("");
   const [showReportDropdown, setShowReportDropdown] = useState(false);
-  const [activeSubReport, setActiveSubReport] = useState("analytics");
+  const [activeSubReport, setActiveSubReport] = useState("");
 
   const handleUserClick = (user: string) => {
     setActiveUser(user);

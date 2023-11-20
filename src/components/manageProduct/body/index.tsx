@@ -22,7 +22,13 @@ interface Product {
     updatedAt: string;
   }
 
-const BodyManageProduct = ({}) => {
+  interface BodyManageProductProps {
+    currentPage: number;
+    onPageChange: (newPage: number) => void;
+    inputSearch: string;
+  }
+
+const BodyManageProduct : React.FC<BodyManageProductProps> = ({currentPage, onPageChange, inputSearch}) => {
     const { isOpen, onOpen, onClose } = useDisclosure()
     const [selectAll, setSelectAll] = useState(false);
     const [product, setProduct] = useState([])
@@ -32,9 +38,17 @@ const BodyManageProduct = ({}) => {
     const [productDelete, setProductDelete] = useState<Product | null>()
     const toast = useToast()
 
+
     const getProductAll = async () => {
         try {
-            const res = await axios.get(`http://localhost:8080/product`);
+            const pageToFetch = Math.max(currentPage, 1);
+            const res = await axios.get(`http://localhost:8080/product/pagination`, {
+                params: {
+                    page: pageToFetch,
+                    pageSize: 2,
+                    productName: inputSearch,
+                }
+            });
             setProduct(res?.data?.data)
         } catch (err : any) {
             toast({ title: err?.response?.data, status: 'error', position: 'top', duration: 2000, isClosable: true})
@@ -65,7 +79,7 @@ const BodyManageProduct = ({}) => {
 
     useEffect(() => {
         getProductAll();
-    }, [productStatus, productDelete]);
+    }, [productStatus, productDelete, onPageChange]);
 
     const handleModalClose = () => {
         onClose();

@@ -4,17 +4,75 @@ import { Checkbox, CheckboxGroup } from '@chakra-ui/react'
 import { Switch, Button } from '@chakra-ui/react'
 import { Card, CardHeader, CardBody, CardFooter, Image, Stack, Heading, Text } from '@chakra-ui/react'
 import { Grid, GridItem } from '@chakra-ui/react'
-import { useState } from 'react';
+import { useState, useEffect} from 'react';
 import { IconPrinter, IconDownload  } from '@tabler/icons-react';
+import { useToast } from '@chakra-ui/react';
+import axios from 'axios'
 
+interface BodyReportCashierProps {
+    currentPage: number;
+    onPageChange: (newPage: number) => void;
+    inputSearch: string;
+  }
 
-const BodyReportCashier = () => {
-    const [selectAll, setSelectAll] = useState(false);
+  interface User {
+    id: number;
+    username: string;
+    transaction: Array<{
+      id: number;
+      userId: number;
+      date: string;
+      totalQuantity: number;
+      totalPrice: string;
+      // Add other properties as needed
+    }>;
+    // Add other user properties as needed
+  }
+
+const BodyReportCashier : React.FC<BodyReportCashierProps> = ({currentPage, onPageChange, inputSearch}) => {
+    const [users, setUsers] = useState<User[]>([]);
+    const toast = useToast()
+
+    const getUserAll = async () => {
+        try {
+            // console.log("alpha", currentPage);
+            // console.log("price", inputSearch);
+            const pageToFetch = Math.max(currentPage, 1);
+            const res = await axios.get(`http://localhost:8080/report/user`, {
+                params: {
+                    page: pageToFetch,
+                    pageSize: 7,
+                    username: inputSearch,
+                }
+            });
+            console.log(res?.data?.data);
+
+            const usersWithTotals = res?.data?.data.map((user: User) => {
+                const totalTransactions = user?.transaction?.length || 0;
+                const totalQuantity = user?.transaction?.reduce((acc: number, transaction) => acc + transaction.totalQuantity, 0) || 0;
+        
+                return {
+                  ...user,
+                  totalTransactions,
+                  totalQuantity,
+                };
+              });
+            
+            setUsers(usersWithTotals)
+        } catch (err : any) {
+            toast({ title: err?.response?.data, status: 'error', position: 'top', duration: 2000, isClosable: true})
+        }
+    };
+
+    useEffect(() => {
+        getUserAll();
+    }, [onPageChange]);
     
     return (
         <Box mt='120px'>
             <Grid templateColumns='repeat(4, 1fr)' gap={6}>
-                <GridItem>
+                {users?.map((item: any) => (
+                    <GridItem>
                     <Card w='367px' h='230px' padding='0' borderRadius='16px'>
                     <Box display='flex' alignItems='flex-end' justifyContent='right' >
                         {/* <Image  w='100%' borderTopRadius='16px' src='../../../../public/images/product1.png' /> */}
@@ -24,13 +82,13 @@ const BodyReportCashier = () => {
                     </Box>
                     <CardBody padding='10px' paddingTop='100px'>
                         <Stack spacing='1.5' alignItems='center' gap='14px'>
-                            <Heading size='md'>Layla bin Nolan</Heading>
+                            <Heading size='md'>{item?.username}</Heading>
                             <Box w='full' display='flex' alignItems='center' justifyContent='space-between'>
-                                <Text fontSize='18px' fontFamily='Nunito' fontWeight='500' color='#838383' >
+                                <Text fontSize='18px'  >
                                     Total Transactions 
                                 </Text>
                                 <Text color='#FF7940' fontFamily='Nunito' fontSize='18px' fontWeight='600'>
-                                    100 Transactions
+                                    {item.totalTransactions} Transactions
                                 </Text>
                             </Box>
                             <Box w='full' display='flex' alignItems='center' justifyContent='space-between'>
@@ -38,7 +96,7 @@ const BodyReportCashier = () => {
                                     Total Products 
                                 </Text>
                                 <Text color='#FF7940' fontFamily='Nunito' fontSize='18px' fontWeight='600'>
-                                    1000 Products
+                                    {item.totalQuantity} Products
                                 </Text>
                             </Box>
                                 
@@ -46,102 +104,9 @@ const BodyReportCashier = () => {
                     </CardBody>
                  </Card>         
                 </GridItem>
-                <GridItem>
-                    <Card w='367px' h='230px' padding='0' borderRadius='16px'>
-                    <Box display='flex' alignItems='flex-end' justifyContent='right' >
-                        {/* <Image  w='100%' borderTopRadius='16px' src='../../../../public/images/product1.png' /> */}
-                        <Box w='150px' h='150px' display='flex' alignItems='center' justifyContent='center' position='absolute' top='0%' left='50%' transform='translate(-50%, -50%)' bgColor='rgba(148, 148, 148, 0.7)' borderRadius='50%'>
-                            <Image  w='150px' h='150px' borderRadius='50%' src='../../../../public/images/product1.png' />
-                        </Box>
-                    </Box>
-                    <CardBody padding='10px' paddingTop='100px'>
-                        <Stack spacing='1.5' alignItems='center' gap='14px'>
-                            <Heading size='md'>Layla bin Nolan</Heading>
-                            <Box w='full' display='flex' alignItems='center' justifyContent='space-between'>
-                                <Text textAlign='justify' fontSize='18px'>
-                                    Roasted 
-                                </Text>
-                                <Text color='#FF7940' fontSize='18px' fontWeight='600'>
-                                    Rp 35.000
-                                </Text>
-                            </Box>
-                            <Box w='full' display='flex' alignItems='center' justifyContent='space-between'>
-                                <Text textAlign='justify' fontSize='18px'>
-                                    Roasted 
-                                </Text>
-                                <Text color='#FF7940' fontSize='18px' fontWeight='600'>
-                                    Rp 35.000
-                                </Text>
-                            </Box>
-                                
-                        </Stack>
-                    </CardBody>
-                 </Card>         
-                </GridItem>
-                <GridItem>
-                    <Card w='367px' h='230px' padding='0' borderRadius='16px'>
-                    <Box display='flex' alignItems='flex-end' justifyContent='right' >
-                        {/* <Image  w='100%' borderTopRadius='16px' src='../../../../public/images/product1.png' /> */}
-                        <Box w='150px' h='150px' display='flex' alignItems='center' justifyContent='center' position='absolute' top='0%' left='50%' transform='translate(-50%, -50%)' bgColor='rgba(148, 148, 148, 0.7)' borderRadius='50%'>
-                            <Image  w='150px' h='150px' borderRadius='50%' src='../../../../public/images/product1.png' />
-                        </Box>
-                    </Box>
-                    <CardBody padding='10px' paddingTop='100px'>
-                        <Stack spacing='1.5' alignItems='center' gap='14px'>
-                            <Heading size='md'>Layla bin Nolan</Heading>
-                            <Box w='full' display='flex' alignItems='center' justifyContent='space-between'>
-                                <Text textAlign='justify' fontSize='18px'>
-                                    Roasted 
-                                </Text>
-                                <Text color='#FF7940' fontSize='18px' fontWeight='600'>
-                                    Rp 35.000
-                                </Text>
-                            </Box>
-                            <Box w='full' display='flex' alignItems='center' justifyContent='space-between'>
-                                <Text textAlign='justify' fontSize='18px'>
-                                    Roasted 
-                                </Text>
-                                <Text color='#FF7940' fontSize='18px' fontWeight='600'>
-                                    Rp 35.000
-                                </Text>
-                            </Box>
-                                
-                        </Stack>
-                    </CardBody>
-                 </Card>         
-                </GridItem>
-                <GridItem>
-                    <Card w='367px' h='230px' padding='0' borderRadius='16px'>
-                    <Box display='flex' alignItems='flex-end' justifyContent='right' >
-                        {/* <Image  w='100%' borderTopRadius='16px' src='../../../../public/images/product1.png' /> */}
-                        <Box w='150px' h='150px' display='flex' alignItems='center' justifyContent='center' position='absolute' top='0%' left='50%' transform='translate(-50%, -50%)' bgColor='rgba(148, 148, 148, 0.7)' borderRadius='50%'>
-                            <Image  w='150px' h='150px' borderRadius='50%' src='../../../../public/images/product1.png' />
-                        </Box>
-                    </Box>
-                    <CardBody padding='10px' paddingTop='100px'>
-                        <Stack spacing='1.5' alignItems='center' gap='14px'>
-                            <Heading size='md'>Layla bin Nolan</Heading>
-                            <Box w='full' display='flex' alignItems='center' justifyContent='space-between'>
-                                <Text textAlign='justify' fontSize='18px'>
-                                    Roasted 
-                                </Text>
-                                <Text color='#FF7940' fontSize='18px' fontWeight='600'>
-                                    Rp 35.000
-                                </Text>
-                            </Box>
-                            <Box w='full' display='flex' alignItems='center' justifyContent='space-between'>
-                                <Text textAlign='justify' fontSize='18px'>
-                                    Roasted 
-                                </Text>
-                                <Text color='#FF7940' fontSize='18px' fontWeight='600'>
-                                    Rp 35.000
-                                </Text>
-                            </Box>
-                                
-                        </Stack>
-                    </CardBody>
-                 </Card>         
-                </GridItem>
+                ))}
+                
+                
             </Grid>
                        
 

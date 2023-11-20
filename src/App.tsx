@@ -35,6 +35,10 @@ function App() {
   const [inputSearch, setInputSearch] = useState("")
   const [startDate, setStartDate] = useState(''); 
   const [endDate, setEndDate] = useState('');
+  const [currentPageManageProduct, setCurrentPageManageProduct] = useState(1);
+  const [inputSearchManageProduct, setInputSearchManageProduct] = useState("");
+  const [currentPageUserReport, setCurrentPageUserReport] = useState(1);
+  const [inputSearchUsersReport, setInputSearchUserReport] = useState("")
 
   const handlePageChange = (newPage: number, event?: React.MouseEvent<HTMLButtonElement>) => {
     if (event) {
@@ -58,16 +62,45 @@ function App() {
     setStartDate(newStartDate);
    
   };
+  // manage product
+  const handlePageChangeManageProduct = (newPage: number, event?: React.MouseEvent<HTMLButtonElement>) => {
+    if (event) {
+      event.preventDefault();
+    }
+    setCurrentPageManageProduct(newPage);
+  }
+
+  const handleSearchManageProduct = (productName: string, event?: React.MouseEvent<HTMLButtonElement>) => {
+    if (event) {
+      event.preventDefault();
+    }
+   setInputSearchManageProduct(productName)
+  };
+
+   // user report
+   const handlePageChangeUserReport = (newPage: number, event?: React.MouseEvent<HTMLButtonElement>) => {
+    if (event) {
+      event.preventDefault();
+    }
+    setCurrentPageUserReport(newPage);
+  }
+
+  const handleSearchUserReport = (username: string, event?: React.MouseEvent<HTMLButtonElement>) => {
+    if (event) {
+      event.preventDefault();
+    }
+   setInputSearchUserReport(username)
+  };
   return (
     <>
       <Routes>
         <Route path='/' element={<AdminPage viewHeader={<HeaderDashboard/>} viewBody={<BodyDashboard/>}/>} />
         <Route path='/user-management' element={<AdminPage viewHeader={<HeaderUserManagement/>} viewBody={<BodyUserManagement/>} viewFooter={<FooterUserManagement/>}/>} />
-        <Route path='/manage-category'element={<AdminPage viewHeader={<HeaderManageCategory/>} viewBody={<BodyManageCategory />} viewFooter={<FooterManageCategory/>} />} />
-        <Route path='/manage-product' element={<AdminPage viewHeader={<HeaderManageProduct />} viewBody={<BodyManageProduct/>} viewFooter={<FooterManageProduct/>} />} />
+        <Route path='/manage-category'element={<AdminPage viewHeader={<HeaderManageCategory/>} viewBody={<BodyManageCategory />}  />} />
+        <Route path='/manage-product' element={<AdminPage viewHeader={<HeaderManageProduct inputSearch={handleSearchManageProduct} />} viewBody={<BodyManageProduct currentPage={currentPageManageProduct} onPageChange={handlePageChangeManageProduct} inputSearch={inputSearchManageProduct} />} viewFooter={<FooterManageProduct currentPage={currentPageManageProduct} onPageChange={handlePageChangeManageProduct} />} />} />
         <Route path='/product-list' element={<AdminPage viewHeader={<HeaderProductList inputSearch={handleSearch} />} viewBody={<BodyProductList currentPage={currentPage} onPageChange={handlePageChange} inputSearch={inputSearch}/>} viewFooter={<FooterProductList currentPage={currentPage} onPageChange={handlePageChange}/>}/>} />
         <Route path='/report-transaction' element={<AdminPage viewHeader={<HeaderReportTransaction onDateChange={handleDateChange} />} viewBody={<BodyReportTransaction startDate={startDate} endDate={endDate} />} viewFooter={<FooterReportTransaction/>}/>} />
-        <Route path='/report-cashier' element={<AdminPage viewHeader={<HeaderReportCashier />} viewBody={<BodyReportCashier/>} viewFooter={<FooterReportCashier/>}/>} />
+        <Route path='/report-cashier' element={<AdminPage viewHeader={<HeaderReportCashier inputSearch={handleSearchUserReport} />} viewBody={<BodyReportCashier currentPage={currentPageUserReport} onPageChange={handlePageChangeUserReport} inputSearch={inputSearchUsersReport} />} viewFooter={<FooterReportCashier currentPage={currentPageUserReport} onPageChange={handlePageChangeUserReport} />}/>} />
         <Route path='/report-statistic' element={<AdminPage viewHeader={<HeaderStatistic />} viewBody={<BodyStatistic/>} />} />
         <Route path='/transaction-product' element={<AdminPage viewHeader={<HeaderTransactionProduct />} viewBody={<BodyTransactionProduct/>} viewFooter={<FooterTransactionProduct/>}/>} />
       </Routes>
