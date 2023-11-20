@@ -17,12 +17,15 @@ import {
   ModalCloseButton,
   useDisclosure,
   Center,
+  useToast,
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { IconBox, IconLayoutDashboard } from "@tabler/icons-react";
 import { IconChevronRight, IconChevronLeft } from "@tabler/icons-react";
 import { BsBag, BsPersonCircle } from "react-icons/bs";
+import axios from "axios";
+// import { FaCheckCircle } from "react-icons/fa";
 
 const Sidebar = () => {
   const [activeUser, setActiveUser] = useState("");
@@ -53,6 +56,37 @@ const Sidebar = () => {
   // };
 
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const toast = useToast();
+  const [fieldImage, setFieldImage] = useState<any | string | null>(null);
+
+  function handleChange(e: any) {
+    setFieldImage(e.target.files[0]);
+  }
+
+  const updateProfile = async () => {
+    try {
+      let formData = new FormData();
+      formData.append("image", fieldImage);
+      const { data } = await axios.patch(
+        "http://localhost:8080/update_profile/1",
+        formData
+      );
+      toast({
+        title: data?.message,
+        status: "error",
+      });
+      setFieldImage("");
+      await onClose();
+    } catch (err) {
+      toast({
+        title: "Upload Error",
+        description: "File Too Large",
+        status: "warning",
+      });
+      setFieldImage("");
+    }
+  };
 
   return (
     <Box boxShadow="md" w="15%" h="100vh" bgColor="#ffffff">
@@ -184,8 +218,13 @@ const Sidebar = () => {
               <Modal isOpen={isOpen} onClose={onClose}>
                 <ModalOverlay />
                 <ModalContent>
-                  <ModalHeader>Modal Title</ModalHeader>
-                  <ModalCloseButton />
+                  {/* <ModalHeader>Update Your Profile </ModalHeader> */}
+                  <ModalCloseButton onClick={() => setFieldImage("")} />
+                  <Center>
+                    <Text fontWeight={"bold"} fontSize={"x-large"} p={"1em"}>
+                      Update Profile Picture
+                    </Text>
+                  </Center>
                   <ModalBody>
                     {/* <Lorem count={2} /> */}
                     <Box>
@@ -194,7 +233,7 @@ const Sidebar = () => {
                           <Box p={"0 .5em"}>
                             <VStack align={"stretch"} spacing={"1em"}>
                               <Box>
-                                <Text>Profile Picture</Text>
+                                <Text>Click to Update Profile</Text>
                               </Box>
                               <Box>
                                 <AspectRatio
@@ -221,7 +260,15 @@ const Sidebar = () => {
                                       justifyContent={"center"}
                                     >
                                       <Box>
-                                        <Image />
+                                        <Image
+                                          w={"100%"}
+                                          transform={"scale(1.1)"}
+                                          src={
+                                            fieldImage
+                                              ? URL.createObjectURL(fieldImage)
+                                              : ""
+                                          }
+                                        />
                                       </Box>
                                       <Box
                                         height="100%"
@@ -251,20 +298,35 @@ const Sidebar = () => {
                                         opacity="0"
                                         aria-hidden="true"
                                         accept="image/*"
+                                        onChange={handleChange}
                                       />
                                     </Box>
                                   </Box>
                                 </AspectRatio>
+                                <Center>
+                                  <Button
+                                    display={fieldImage ? "block" : "none"}
+                                    onClick={() => setFieldImage("")}
+                                    size={"xs"}
+                                    colorScheme={"red"}
+                                    boxShadow={"lg"}
+                                  >
+                                    Reset
+                                  </Button>
+                                </Center>
                                 <Box
                                   position={"absolute"}
                                   display={"flex"}
                                   gap={2}
                                   mt={"10px"}
                                 >
-                                  <Button size={"sm"} w={"70px"}>
-                                    Remove
-                                  </Button>
-                                  <Button size={"sm"} w={"70px"}>
+                                  <Button
+                                    size={"sm"}
+                                    w={"70px"}
+                                    onClick={async () => {
+                                      await updateProfile();
+                                    }}
+                                  >
                                     Submit
                                   </Button>
                                 </Box>
@@ -277,53 +339,75 @@ const Sidebar = () => {
                   </ModalBody>
                   <ModalFooter>
                     <Box mt={"40px"}>
-                      <Button colorScheme="blue" mr={3} onClick={onClose}>
-                        Close
-                      </Button>
-                      <Button variant="ghost">Secondary Action</Button>
+                      {/* <Button colorScheme="blue" mr={3} onClick={onClose}> */}
+                      {/* Close */}
+                      {/* </Button> */}
+                      {/* <Button variant="ghost">Secondary Action</Button> */}
                     </Box>
                   </ModalFooter>
                 </ModalContent>
               </Modal>
-              <Button onClick={onOpen}>
-                <Box
-                  display="flex"
-                  gap="18px"
-                  alignItems="center"
-                >
-                  <Box
-                    w="5px"
-                    h="56px"
-                    bgColor="#FF7940"
-                    borderTopRightRadius="5px"
-                    borderBottomRightRadius="5px"
+
+              <Box>
+                <Button onClick={onOpen}>
+                  <HStack
                     style={{
-                      visibility:
-                        activeUser === "profile" ? "visible" : "hidden",
+                      color: activeUser === "profile" ? "#FF7940" : "#707070",
+                      backgroundColor:
+                        activeUser === "profile" ? "#FFF7F3" : "transparent",
                     }}
-                  />
-                  <Box
-                    w="30px"
-                    h="30px"
-                    bgColor="#D9D9D9"
-                    borderRadius="50%"
-                  ></Box>
-                  <Text
-                    fontFamily="Nunito"
-                    fontSize="16px"
-                    fontWeight="600"
-                    isTruncated
+                    onClick={() => handleUserClick("profile")}
+                    w="full"
+                    h="56px"
+                    gap="18px"
+                    alignItems="center"
+                    justifyContent="space-between"
                   >
-                    Fransisca Angelica
-                  </Text>
-                </Box>
-              </Button>
-              <Box padding="0 10px 0 0">
-                {activeUser === "profile" ? (
-                  <IconChevronLeft size="18px" />
-                ) : (
-                  <IconChevronRight size="18px" />
-                )}
+                    <Box display="flex" gap="18px" alignItems="center">
+                      <Box
+                        w="5px"
+                        h="56px"
+                        bgColor="#FF7940"
+                        borderTopRightRadius="5px"
+                        borderBottomRightRadius="5px"
+                        style={{
+                          visibility:
+                            activeUser === "profile" ? "visible" : "hidden",
+                        }}
+                      />
+                      <Box
+                        bgColor={"yellow"}
+                        w="30px"
+                        h="30px"
+                        // bgColor="#D9D9D9"
+                        // borderRadius="50%"
+                      >
+                        <Image
+                          src={`${
+                            import.meta.env.VITE_APP_API_IMAGE_URL
+                          }/profile/product_2023_10_19_logo ratan.png`}
+                          borderRadius={"50%"}
+                          boxSize={"2em"}
+                        />
+                      </Box>
+                      <Text
+                        fontFamily="Nunito"
+                        fontSize="16px"
+                        fontWeight="600"
+                        isTruncated
+                      >
+                        Fransisca Angelica
+                      </Text>
+                    </Box>
+                    <Box padding="0 10px 0 0">
+                      {activeUser === "profile" ? (
+                        <IconChevronLeft size="18px" />
+                      ) : (
+                        <IconChevronRight size="18px" />
+                      )}
+                    </Box>
+                  </HStack>
+                </Button>
               </Box>
             </HStack>
           </Link>
