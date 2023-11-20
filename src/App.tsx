@@ -13,8 +13,6 @@ import UserManagement from "./components/userManagement/userManagement";
 
 function App() {
   const isLoggedIn = useSelector((state) => {
-    console.log("useSelector");
-    console.log(state);
     return state?.mainReducer?.auth.isLoggedIn;
   });
 

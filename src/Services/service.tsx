@@ -42,6 +42,37 @@ const register = (
     });
 };
 
+const updateUser = (
+  username: string,
+  email: string,
+  password: string,
+  phoneNumber: string,
+  address: string,
+  avatar: string,
+  roleId: number,
+  userId: number
+) => {
+  return axios
+    .patch(API_URL + "auth/update/" + userId, {
+      username,
+      email,
+      password,
+      phoneNumber,
+      address,
+      avatar,
+      roleId,
+    })
+    .then((response) => {
+      return response.data;
+    });
+};
+
+const getAllUser = () => {
+  return axios.get(API_URL + "auth/dataUser/").then((response) => {
+    return response.data;
+  });
+};
+
 const logout = () => {
   localStorage.removeItem("user");
   localStorage.removeItem("token");
@@ -50,5 +81,7 @@ const logout = () => {
 export default {
   login,
   register,
+  updateUser,
+  getAllUser,
   logout,
 };
