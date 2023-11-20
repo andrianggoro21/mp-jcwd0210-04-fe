@@ -8,32 +8,27 @@ import FooterManageProduct from "./components/manageProduct/footer";
 import HeaderManageCategory from "./components/manageCategory/header";
 import BodyManageCategory from "./components/manageCategory/body";
 import FooterManageCategory from "./components/manageCategory/footer";
-import HeaderUserManagement from "./components/userManagement/header";
-import BodyUserManagement from "./components/userManagement/body";
-import FooterUserManagement from "./components/userManagement/footer";
 import Login from "./pages/Auth/login";
+import UserManagement from "./components/userManagement/userManagement";
 
 function App() {
   const isLoggedIn = useSelector((state) => {
-    return state.mainReducer.auth.isLoggedIn;
+    console.log("useSelector");
+    console.log(state);
+    return state?.mainReducer?.auth.isLoggedIn;
   });
 
   return (
     <>
       <Routes>
-        {isLoggedIn ? (
+        {!isLoggedIn ? (
+          <>
+            <Route path="/" element={<Login />} />
+          </>
+        ) : (
           <>
             <Route path="/report" element={<Reports />} />
-            <Route
-              path="/user-management"
-              element={
-                <AdminPage
-                  viewHeader={<HeaderUserManagement />}
-                  viewBody={<BodyUserManagement />}
-                  viewFooter={<FooterUserManagement />}
-                />
-              }
-            />
+            <Route path="/user-management" element={<UserManagement />} />
             <Route
               path="/manage-category"
               element={
@@ -54,10 +49,6 @@ function App() {
                 />
               }
             />
-          </>
-        ) : (
-          <>
-            <Route path="/login" element={<Login />} />
           </>
         )}
       </Routes>

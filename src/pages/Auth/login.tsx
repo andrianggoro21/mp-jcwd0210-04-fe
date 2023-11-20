@@ -23,6 +23,9 @@ import { login } from "../../Action/auth";
 import { useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Login: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -40,17 +43,32 @@ const Login: React.FC = () => {
       password: "",
     },
     onSubmit: async (values) => {
-      console.log("res");
-      console.log(values);
       dispatch(login(values.email, values.password))
         .then(() => {
+          toast.success("Register Successful", {
+            autoClose: 3000,
+          });
           navigate("/user-management");
         })
         .catch((error) => {
-          console.log(error);
+          toast.warning(error.response.data, {
+            autoClose: 5000,
+          });
         });
     },
   });
+
+  const isLoggedIn = useSelector((state) => {
+    return state?.mainReducer?.auth.isLoggedIn;
+  });
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate("/user-management");
+    } else {
+      navigate("/");
+    }
+  }, []);
 
   return (
     <>
