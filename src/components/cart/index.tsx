@@ -9,9 +9,6 @@ import {
   Center,
   Grid,
   VStack,
-  // HStack,
-  // VStack,
-  // IconButton,
 } from "@chakra-ui/react";
 import {
   Modal,
@@ -29,6 +26,7 @@ import { MdOutlineQrCode2 } from "react-icons/md";
 import ProductInCart from "../product-in-cart";
 import { ChangeEvent, useState, useEffect } from "react";
 import axios from "axios";
+// import { useRouteId } from "react-router/dist/lib/hooks";
 // import Qris from "../../img/Qris.jpg"
 
 export default function Cart(props: any) {
@@ -39,24 +37,24 @@ export default function Cart(props: any) {
   const [cash, setCash] = useState(false);
   const [qris, setQris] = useState(false);
   const [change, setChange] = useState(false);
-  const [wallet, setWallet] = useState(false);
-  // const [userId, setUserId] = useState(1);
+  const [debit, setDebit] = useState(false);
+  const [userId, setUserId] = useState(1);
   const toast = useToast();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setPaymentAmount(Number(e.target.value));
   };
 
-  const transactionDetail = async (id: number) => {
+  const transaction_details = async (id: number) => {
     try {
       props?.cart?.map(async (el: any) => {
         const res = await axios.post(
-          "http://localhost:8000/transaction-detail/create",
+          "http://localhost:8080/transaction_details/create",
           {
             productId: el.id,
             transactionId: id,
             quantity: el.qty,
-            total_price: props.total,
+            price: props.total,
             cart_id: 1,
           }
         );
@@ -69,16 +67,21 @@ export default function Cart(props: any) {
   };
 
   const transaction = async (
-    date: Date,
+    userId: number,
     totalQuantity: number,
     totalPrice: number,
     payment_methodId: number,
     paymentAmount: number,
     paymentChange: number
-    // total_price_ppn
   ) => {
+    console.log("totalQty", totalQuantity);
+    console.log("totalPrice", totalPrice);
+    console.log("payment_methodId", payment_methodId);
+    console.log("paymentAmount", paymentAmount);
+    console.log("paymentChange"), paymentChange;
+
     try {
-      if (!!props?.totalPpn === false) {
+      if (!!props?.total === false) {
         toast({
           title: "Can't Process Transaction",
           description: "Cart Empty!",
@@ -120,18 +123,20 @@ export default function Cart(props: any) {
         throw new Error("Error");
       }
 
-      const res = await axios.post("http://localhost:8000/transaction/create", {
-        date,
-        totalQuantity,
-        totalPrice,
-        payment_methodId,
-        paymentAmount,
-        paymentChange,
-        // total_price_ppn,
-      });
-      console.log("lll", res);
+      const res = await axios.post(
+        "http://localhost:8080/transactions/create",
+        {
+          userId,
+          totalQuantity,
+          totalPrice,
+          payment_methodId,
+          paymentAmount,
+          paymentChange,
+        }
+      );
+      console.log("dataTrans", res?.data?.data);
 
-      await transactionDetail(res?.data?.data?.id);
+      await transaction_details(res?.data?.data?.id);
       toast({
         title: "Transaction Done!",
         description: "Thank You So Much!",
@@ -140,13 +145,13 @@ export default function Cart(props: any) {
         position: "top-right",
       });
       onClose();
-    } catch (err) {
-      throw err;
+    } catch (err: any) {
+      alert(err?.response?.data);
     }
   };
 
   useEffect(() => {
-    setPaymentChange(paymentAmount - props.totalPpn);
+    setPaymentChange(paymentAmount - props.total);
   }, [paymentAmount, paymentChange]);
 
   return (
@@ -175,6 +180,8 @@ export default function Cart(props: any) {
               key={index}
               total={props.total}
               setTotal={props.setTotal}
+              totalQty={props.totalQty}
+              setTotalQty={props.setTotalQty}
             />
           );
         })}
@@ -188,29 +195,22 @@ export default function Cart(props: any) {
         boxShadow="md"
         bgColor={"#F5F5F5"}
       >
-        <Box>
+        <Box mt="2" borderTopWidth="1px" pt="2" fontWeight="bold">
           <Flex>
-            <Text fontWeight={"500"}>Subtotal :</Text>
+            <Text color={"#FF7940"}>Total Price :</Text>
             <Spacer />
             <Text>{props.total}</Text>
           </Flex>
-          <Flex>
-            <Text fontWeight={"500"}> Pajak 11% :</Text>
-            <Spacer />
-            <Text>{props.ppn}</Text>
-          </Flex>
         </Box>
-        <Box mt="2" borderTopWidth="1px" pt="2" fontWeight="bold">
-          <Flex>
-            <Text color={"#FF7940"}>Total :</Text>
-            <Spacer />
-            <Text>{props.totalPpn}</Text>
-          </Flex>
-        </Box>
+        <Flex>
+          <Text> Total Quantity</Text>
+          <Spacer />
+          <Text> {props.totalQty} </Text>
+        </Flex>
       </Box>
-      <Box mt="100px" maxW="300px" my={4}>
+      {/* <Box mt="100px" maxW="300px" my={4}>
         <FormLabel>Select Payment</FormLabel>
-      </Box>
+      </Box> */}
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
@@ -221,134 +221,160 @@ export default function Cart(props: any) {
           </Center>
           <ModalCloseButton />
           <ModalBody>
-            {/* <VStack> */}
-            <Box
-              onClick={() => {
-                setCash(false);
-                setQris(false);
-                setChange(false);
-                setWallet(!wallet);
-                setPaymentMethod(3);
-              }}
-            >
-              <VStack
-                spacing={"0"}
-                w={"100%"}
-                border={"1px"}
-                borderRadius={".5em"}
-                p={".5em"}
-                cursor={"pointer"}
-              >
-                <Box color={"black"} fontSize={"4em"}>
-                  <LuWallet />
+            <Center>
+              <Box>
+                <Box
+                  w={"8em"}
+                  h={"4em"}
+                  display={"flex"}
+                  flexDir={"row"}
+                  _focusVisible={{ color: "red" }}
+                  borderRadius={"0.5em"}
+                  bgColor={"#EEF1F2"}
+                  border={cash ? "solid #F99B2A" : "solid #6D6D6D"}
+                  boxShadow={"lg"}
+                  transition={"transform .3s"}
+                  _hover={{ bgColor: "orange.100", transform: "scale(1.05)" }}
+                  onClick={() => {
+                    setCash(false);
+                    setQris(false);
+                    setChange(false);
+                    setDebit(!debit);
+                    setPaymentMethod(1);
+                  }}
+                >
+                  <VStack
+                    spacing={"0"}
+                    w={"100%"}
+                    border={"1px"}
+                    borderRadius={".5em"}
+                    p={".5em"}
+                    cursor={"pointer"}
+                  >
+                    <Box color={"black"} fontSize={"2em"}>
+                      <LuWallet />
+                    </Box>
+                    <Box color={"yellow"}>
+                      <Text as={"b"} textColor={"black"} fontSize={"10px"}>
+                        Debit
+                      </Text>
+                    </Box>
+                  </VStack>
                 </Box>
-                <Box color={"yellow"}>
-                  <Text as={"b"} textColor={"black"} fontSize={"xl"}>
-                    Debit
-                  </Text>
+                <Box
+                  mt={"5px"}
+                  w={"8em"}
+                  h={"4em"}
+                  display={"flex"}
+                  flexDir={"row"}
+                  _focusVisible={{ color: "red" }}
+                  borderRadius={"0.5em"}
+                  bgColor={"#EEF1F2"}
+                  border={cash ? "solid #F99B2A" : "solid #6D6D6D"}
+                  boxShadow={"lg"}
+                  transition={"transform .3s"}
+                  _hover={{ bgColor: "orange.100", transform: "scale(1.05)" }}
+                  onClick={() => {
+                    setPaymentMethod(2);
+                    setPaymentAmount(0);
+                    setDebit(false);
+                    setCash(false);
+                    setChange(false);
+                    setQris(!qris);
+                  }}
+                >
+                  <VStack
+                    spacing={"0"}
+                    w={"100%"}
+                    border={"1px"}
+                    borderRadius={".5em"}
+                    p={".5em"}
+                    cursor={"pointer"}
+                  >
+                    <Box color={"black"} fontSize={"2em"}>
+                      <MdOutlineQrCode2 />
+                    </Box>
+                    <Box color={"yellow"}>
+                      <Text as={"b"} textColor={"black"} fontSize={"10px"}>
+                        Qris
+                      </Text>
+                    </Box>
+                  </VStack>
                 </Box>
-              </VStack>
-            </Box>
-            <Box
-              onClick={() => {
-                setPaymentMethod(2);
-                setPaymentAmount(0);
-                setWallet(false);
-                setCash(false);
-                setChange(false);
-                setQris(!qris);
-              }}
-            >
-              <VStack
-                spacing={"0"}
-                w={"100%"}
-                border={"1px"}
-                borderRadius={".5em"}
-                p={".5em"}
-                cursor={"pointer"}
-              >
-                <Box color={"black"} fontSize={"4em"}>
-                  <MdOutlineQrCode2 />
+                <Box
+                  mt={"5px"}
+                  w={"8em"}
+                  h={"4em"}
+                  display={"flex"}
+                  flexDir={"row"}
+                  _focusVisible={{ color: "red" }}
+                  borderRadius={"0.5em"}
+                  bgColor={"#EEF1F2"}
+                  border={cash ? "solid #F99B2A" : "solid #6D6D6D"}
+                  boxShadow={"lg"}
+                  transition={"transform .3s"}
+                  _hover={{ bgColor: "orange.100", transform: "scale(1.05)" }}
+                  onClick={() => {
+                    setPaymentMethod(3);
+                    setDebit(false);
+                    setQris(false);
+                    setCash(!cash);
+                    setChange(!change);
+                    setPaymentAmount(0);
+                  }}
+                >
+                  <VStack
+                    spacing={"0"}
+                    w={"100%"}
+                    border={"1px"}
+                    borderRadius={".5em"}
+                    p={".5em"}
+                    cursor={"pointer"}
+                  >
+                    <Box color={"black"} fontSize={"2em"}>
+                      <LiaMoneyBillWaveSolid />
+                    </Box>
+                    <Box color={cash ? "#F99B2A" : "#6D6D6D"}>
+                      <Text as={"b"} textColor={"black"} fontSize={"10px"}>
+                        Cash
+                      </Text>
+                    </Box>
+                    <Input
+                      mt={"5px"}
+                      w={"8em"}
+                      h={"4em"}
+                      boxShadow={"md"}
+                      type={"number"}
+                      placeholder={"Enter Payment Amount"}
+                      focusBorderColor={"black"}
+                      value={paymentAmount}
+                      onChange={handleChange}
+                      textAlign={"center"}
+                    />
+                  </VStack>
                 </Box>
-                <Box color={"yellow"}>
-                  <Text as={"b"} textColor={"black"} fontSize={"xl"}>
-                    Qris
-                  </Text>
-                </Box>
-              </VStack>
-            </Box>
-            <Box
-              w={"15em"}
-              h={"8em"}
-              display={"flex"}
-              flexDir={"row"}
-              _focusVisible={{ color: "red" }}
-              borderRadius={"0.5em"}
-              bgColor={"#EEF1F2"}
-              border={cash ? "solid #F99B2A" : "solid #6D6D6D"}
-              boxShadow={"lg"}
-              transition={"transform .3s"}
-              _hover={{ bgColor: "orange.100", transform: "scale(1.05)" }}
-              onClick={() => {
-                setPaymentMethod(1);
-                setWallet(false);
-                setQris(false);
-                setCash(!cash);
-                setChange(!change);
-                setPaymentAmount(0);
-              }}
-            >
-              <VStack
-                spacing={"0"}
-                w={"100%"}
-                border={"1px"}
-                borderRadius={".5em"}
-                p={".5em"}
-                cursor={"pointer"}
-              >
-                <Box color={"black"} fontSize={"4em"}>
-                  <LiaMoneyBillWaveSolid />
-                </Box>
-                <Box color={cash ? "#F99B2A" : "#6D6D6D"}>
-                  <Text as={"b"} textColor={"black"} fontSize={"xl"}>
-                    Cash
-                  </Text>
-                </Box>
-                <Input
-                  boxShadow={"md"}
-                  // display={change ? "block" : "none"}
-                  type={"number"}
-                  placeholder={"Enter Payment Amount"}
-                  w={"14em"}
-                  focusBorderColor={"black"}
-                  value={paymentAmount}
-                  onChange={handleChange}
-                  textAlign={"center"}
-                />
-              </VStack>
-            </Box>
-            {/* </VStack> */}
+              </Box>
+            </Center>
           </ModalBody>
 
-          <ModalFooter>
+          <ModalFooter mt={"30px"}>
             <Button
               bgColor={"#FF7940"}
               _hover={{ bgColor: "#FF7940" }}
-              mr={3}
+              mr={120}
               onClick={async () => {
+                console.log(transaction);
                 await transaction(
-                  date,
-                  props?.total,
+                  userId,
                   props?.totalQty,
+                  props?.total,
                   paymentMethod,
                   paymentAmount,
                   paymentChange
-                  // props?.totalPpn
                 );
                 await props.setCart([]);
-                props?.setPpn(0);
                 props?.setTotal(0);
-                props?.setTotalPpn(0);
+                setPaymentMethod(0);
                 setPaymentChange(0);
                 setPaymentAmount(0);
                 props?.setTotalQty(0);
@@ -362,6 +388,7 @@ export default function Cart(props: any) {
       </Modal>
       <Center>
         <Button
+          mt={"20px"}
           boxShadow="md"
           fontWeight={"bold"}
           color={"#F5F5F5"}

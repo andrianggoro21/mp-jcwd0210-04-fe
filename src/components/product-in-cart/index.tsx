@@ -6,39 +6,63 @@ import { useState, useEffect } from "react";
 import useCounter from "./useCounter";
 
 export default function ProductInCart(props: any) {
-  const [count, increment, decrement] = useCounter(props.qty);
-  const [totalPPrice, setTotalPPrice] = useState(props.price * props.qty);
-  useEffect(() => {
-    setTotalPPrice(props.qty * props.price);
-  }, [totalPPrice, setTotalPPrice, props.qty]);
-  console.log("PIC", props);
-  const plus = (id: number) => {
-    props?.setCart(
-      props?.cart.map((el: any) => {
-        if (el?.id === id) {
-          console.log(el.id === id);
-          return {
-            ...el,
-            qty: el.qty + 1,
-          };
-        } else {
-          return el;
-        }
-      })
-    );
-    setTotalPPrice(props.qty * props.price);
-    increment();
-    props?.setTotal(+props.total + +props.price);
-  };
+ const [count, increment, decrement] = useCounter(props.qty);
+ const [totalPPrice, setTotalPPrice] = useState(
+   +props.price * +props.qty
+ );
+ useEffect(() => {
+   setTotalPPrice(+props.qty * +props.price);
+ }, [totalPPrice, setTotalPPrice, props.qty, count, increment, decrement]);
 
-  const minus = () => {
-    decrement();
-    props.setTotal(+props.total - +props.price);
-  };
+ const plus = (id: number) => {
+   props?.setCart(
+     props?.cart.map((el: any) => {
+       if (el?.id === id) {
+         console.log(el.id === id);
+         return {
+           ...el,
+           qty: el.qty + 1,
+         };
+       } else {
+         return el;
+       }
+     })
+   );
+   props?.setTotalQty(+props?.totalQty + 1);
+   setTotalPPrice(+props?.qty * +props?.price);
+   increment();
+   props?.setTotal(+props?.total + +props?.price);
+ };
 
-  const handleDelete = (id: number) => {
-    props?.setCart(props?.cart.filter((el: any) => el.id !== id));
-  };
+ const minus = (id: number) => {
+   props?.setCart(
+     props?.cart.map((el: any) => {
+       if (el?.id === id) {
+        if(el.qty > 1)
+         return {
+           ...el,
+           qty: el.qty - 1,
+         };
+       } else {
+         return el;
+       }
+     })
+   );
+   props?.setTotalQty(props?.totalQty - 1);
+   setTotalPPrice(totalPPrice - +props?.price);
+   decrement();
+   props?.setTotal(props?.total - +props?.price);
+ };
+
+ const handleDelete = (id: number) => {
+   props?.setTotalQty(props?.totalQty - props?.qty);
+   props?.setTotal(props.total - totalPPrice)
+   props?.setCart(props?.cart.filter((el: any) => el.id !== id));
+   // reset();
+ };
+
+
+
 
   return (
     <Box mt={"30px"} border="md">
@@ -64,7 +88,7 @@ export default function ProductInCart(props: any) {
               variant={"ghost"}
               size={"md"}
               onClick={() => {
-                count > 1 ? minus() : null;
+                count > 1 ? minus(props?.id) : null;
               }}
             />
             <IconButton
@@ -84,7 +108,7 @@ export default function ProductInCart(props: any) {
               onClick={() => {
                 handleDelete(props?.id);
                 setTotalPPrice(0);
-                props.setTotal(0);
+                // props.setTotal(0);
               }}
             />
           </HStack>

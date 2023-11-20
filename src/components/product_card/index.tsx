@@ -63,10 +63,11 @@ export const ProductCard = (props: any) => {
               const check = checkExist();
               if (check === false) {
               } else {
+                props?.setTotalQty(props?.totalQty + 1)
                 props.setCart([test, ...props.cart]);
-                props.setTotal(+props.total + +count * +props.price);
-                reset();
+                props.setTotal(props.total + count * props.price);
               }
+              reset();
             }}
           />
           Add to Cart

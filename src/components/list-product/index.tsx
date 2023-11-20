@@ -36,7 +36,7 @@ export const ListProduct = (props: any) => {
       const res = await axios.get(`http://localhost:8080/product`);
       console.log("Product Data", res.data.data);
       setProduct(res?.data?.data);
-    } catch (err) {
+    } catch (err: any) {
       console.error("Error Fetching Product Data:", err);
       throw err;
     }
@@ -295,6 +295,8 @@ export const ListProduct = (props: any) => {
                 total={props.total}
                 setTotal={props.setTotal}
                 handlesPlus={props.handlesPlus}
+                totalQty={props.totalQty}
+                setTotalQty={props.setTotalQty}
               />
             ))}
         </Grid>

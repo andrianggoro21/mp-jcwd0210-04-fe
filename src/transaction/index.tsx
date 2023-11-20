@@ -1,4 +1,4 @@
-import { Grid, GridItem, HStack } from "@chakra-ui/react";
+import { HStack } from "@chakra-ui/react";
 import Chart from "../components/cart";
 import Sidebar from "../components/sidebar-transaction";
 import { ListProduct } from "../components/list-product";
@@ -7,35 +7,25 @@ import { useState, useEffect } from "react";
 export default function Transaction() {
   const [cart, setCart] = useState([] as any);
   const [total, setTotal] = useState(0);
-  console.log("zzzzzzzzzz", cart);
-  
-  const [ppn, setPpn] = useState(0);
-  const [totalPpn, setTotalPpn] = useState(0);
-  const [diskon, setDiskon] = useState(0);
-  const [day, setDay] = useState("");
+   const [totalQty, setTotalQty] = useState(0);
 
-  useEffect(() => {
-    if (day === "Friday") {
-      setDiskon(10000);
-    }
-    setPpn(total * 0.1);
-    setTotalPpn(total + total * 0.1 - diskon);
-  }, [total, setTotal, ppn, setPpn, day]);
-  const handlesPlus = async (id: number, params: any) => {
-    const exist = await cart.map((el: any) => {
-      if (el.id === Number(id)) {
-        return {
-          ...el,
-          qty: el.qty + el.qty,
-        };
-      }
-    });
-    if (exist.length > 0) {
-      alert("Product Sudah Ada");
-    } else {
-      setCart([params, ...cart]);
-    }
-  };
+  // const [day, setDay] = useState("");
+
+  // const handlesPlus = async (id: number, params: any) => {
+  //   const exist = await cart.map((el: any) => {
+  //     if (el.id === Number(id)) {
+  //       return {
+  //         ...el,
+  //         qty: el.qty + el.qty,
+  //       };
+  //     }
+  //   });
+  //   if (exist.length > 0) {
+  //     alert("Product Sudah Ada");
+  //   } else {
+  //     setCart([params, ...cart]);
+  //   }
+  // };
 
   return (
     <HStack align={"stretch"} w={"100vw"} h={"100vh"}>
@@ -45,16 +35,16 @@ export default function Transaction() {
         setCart={setCart}
         total={total}
         setTotal={setTotal}
-        handlesplus={handlesPlus}
+        totalQty={totalQty}
+        setTotalQty={setTotalQty}
       />
       <Chart
         cart={cart}
         setCart={setCart}
         total={total}
         setTotal={setTotal}
-        ppn={ppn}
-        totalPpn={totalPpn}
-        // diskon={diskon}
+        totalQty={totalQty}
+        setTotalQty={setTotalQty}
       />
     </HStack>
     // <Grid templateColumns={"repeat(3, 1fr)"}>
