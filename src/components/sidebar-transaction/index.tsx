@@ -18,17 +18,20 @@ import {
   useDisclosure,
   Center,
 } from "@chakra-ui/react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { IconBox, IconLayoutDashboard } from "@tabler/icons-react";
 import { IconChevronRight, IconChevronLeft } from "@tabler/icons-react";
 import { BsBag, BsPersonCircle } from "react-icons/bs";
+import { useUserRole } from "../../pages/roles";
 
 const Sidebar = () => {
   const [activeUser, setActiveUser] = useState("");
   const [activeMenu, setActiveMenu] = useState("dash");
   const [showProductDropdown, setShowProductDropdown] = useState(false);
   // const [activeSubProduct, setActiveSubProduct] = useState("product-list");
+
+  const navigate = useNavigate();
 
   const handleUserClick = (user: string) => {
     setActiveUser(user);
@@ -53,6 +56,13 @@ const Sidebar = () => {
   // };
 
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const { setRole } = useUserRole();
+  const handleLogout = () => {
+    setRole('');
+    navigate("/login")
+   
+  };
 
   return (
     <Box boxShadow="md" w="15%" h="100vh" bgColor="#ffffff">
@@ -327,6 +337,11 @@ const Sidebar = () => {
               </Box>
             </HStack>
           </Link>
+          <Box w='full' display='flex' alignItems='center' justifyContent='center'>
+            <Button onClick={() => handleLogout()}>
+                Logout
+            </Button>
+        </Box>  
         </Box>
       </Box>
     </Box>

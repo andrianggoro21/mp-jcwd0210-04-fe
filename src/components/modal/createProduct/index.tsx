@@ -137,7 +137,7 @@ const ModalCreateProduct : React.FC<ModalCreateProductProps> = ({isOpen, onClose
                                             <FormLabel color='#696666'>Price</FormLabel>
                                             <InputGroup>
                                                 <InputLeftAddon bgColor='#EEEDED' children='Rp' />
-                                                <Input type='tel' bgColor='#EEEDED' placeholder='phone number' name="price" value={formik.values.price} onChange={formik.handleChange} />
+                                                <Input type='tel' bgColor='#EEEDED' placeholder='Price' name="price" value={formik.values.price} onChange={formik.handleChange} />
                                             </InputGroup>
                                         </FormControl>
                                         <FormControl>

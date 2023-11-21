@@ -45,10 +45,12 @@ const BodyManageProduct : React.FC<BodyManageProductProps> = ({currentPage, onPa
             const res = await axios.get(`http://localhost:8080/product/pagination`, {
                 params: {
                     page: pageToFetch,
-                    pageSize: 2,
+                    pageSize: 8,
                     productName: inputSearch,
                 }
             });
+            // console.log(res.data.data);
+            
             setProduct(res?.data?.data)
         } catch (err : any) {
             toast({ title: err?.response?.data, status: 'error', position: 'top', duration: 2000, isClosable: true})
@@ -116,7 +118,7 @@ const BodyManageProduct : React.FC<BodyManageProductProps> = ({currentPage, onPa
                             <Td fontSize='16px'> 
                                 <Box w='160px' h='50px' overflow='hidden' textOverflow='ellipsis' whiteSpace='normal' /*overflowY='auto'*/ >{item?.description}</Box> 
                             </Td>
-                            <Td textAlign='center'><Switch colorScheme='green' isChecked={item.statusId === 2} onChange={() => updateProductStatus(item.id, item.statusId === 2 ? 1 : 2)}/></Td>
+                            <Td textAlign='center'><Switch colorScheme='green' isChecked={item.statusId === 1} onChange={() => updateProductStatus(item.id, item.statusId === 2 ? 1 : 2)}/></Td>
                             <Td textAlign='center'>
                                 <Box display='flex' justifyContent='center' gap='10px'>
                                     <Button size='sm' w='50px' bgColor='#FF7940' color='#ffffff' onClick={() => { setProductById(item); setProductId(item?.id); onOpen(); }} >Edit</Button> 

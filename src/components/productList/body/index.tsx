@@ -27,7 +27,7 @@ const BodyProductList : React.FC<BodyProductListProps> = ({currentPage, onPageCh
             const res = await axios.get(`http://localhost:8080/product/pagination`, {
                 params: {
                     page: pageToFetch,
-                    pageSize: 7,
+                    pageSize: 12,
                     productName: inputSearch,
                     categoryId: categoryChange,
                     alphaId: alphabet,
@@ -65,7 +65,7 @@ const BodyProductList : React.FC<BodyProductListProps> = ({currentPage, onPageCh
             <ButtonCategory onCategoryChange={handleCategoryChange}/>
             <Box display='flex' flexDirection='column'>
                 <Box display='flex' justifyContent='space-between'>
-                    <Text color='#000000' fontFamily="Nunito" fontWeight='700' fontSize='20px'>15 Menus</Text>
+                    <Text color='#000000' fontFamily="Nunito" fontWeight='700' fontSize='20px'>Menu</Text>
                     {/* <form onSubmit={formik.handleSubmit} > */}
                         <Box display='flex' gap='20px'>
                             <Box>
@@ -117,13 +117,13 @@ const BodyProductList : React.FC<BodyProductListProps> = ({currentPage, onPageCh
 
                         {product?.map((item: any) => (
                             <GridItem display='flex' className='grid item' alignItems='center' justifyContent='center' key={item.id} >
-                                {item?.statusId !== 1 ? ( 
+                                {item?.statusId === 1 ? ( 
                                 <Card w='220px' h='300px' padding='0' borderRadius='16px' css={{transition: 'transform 0.3s ease-in-out',':hover': {transform: 'scale(1.1)',},}}>
                                     <Box display='flex' alignItems='flex-end' justifyContent='right'>
                                         <Image  w='100%' borderTopRadius='16px' src={`${import.meta.env.VITE_APP_IMAGE_URL}/product/${item?.image}`}/>
-                                        <Box w='35px' h='35px' display='flex' alignItems='center' justifyContent='center' position='absolute' top='38%' left='87%' transform='translate(-50%, -50%)' bgColor='rgba(148, 148, 148, 0.7)' borderRadius='4px'>
+                                        {/* <Box w='35px' h='35px' display='flex' alignItems='center' justifyContent='center' position='absolute' top='38%' left='87%' transform='translate(-50%, -50%)' bgColor='rgba(148, 148, 148, 0.7)' borderRadius='4px'>
                                             <IconPlus color='#ffffff'/>
-                                        </Box>
+                                        </Box> */}
                                     </Box>
                                     <CardBody padding='10px'>
                                         <Stack spacing='4'>

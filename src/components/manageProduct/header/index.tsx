@@ -32,6 +32,7 @@ const HeaderManageProduct : React.FC<HeaderProductListProps>= ({inputSearch}) =>
                                     <IconSearch color='#838383' />
                                 </Button> 
                             </Box>
+                            <Button bgColor='#FF7940' color='#ffffff' display='flex' gap='10px' onClick={onOpen}> <IconPlus/> <Text>Create Product</Text> </Button>
                         </Box>
                 </form>
                 

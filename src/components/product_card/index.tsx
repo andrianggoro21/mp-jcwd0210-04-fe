@@ -29,7 +29,7 @@ export const ProductCard = (props: any) => {
   return (
     <Box borderRadius="1em" w="128px" h="180px" p="1.5em 1.5em" boxShadow="md">
       <Box overflow="hidden">
-        <Image src={img} objectFit="cover" w="100%" h="80px" />
+        <Image src={`${import.meta.env.VITE_APP_IMAGE_URL}/product/${props?.image}`} objectFit="cover" w="100%" h="80px" />
       </Box>
       <VStack align="flex" spacing=".1em">
         <Text fontSize={"10px"} right="20px" as="b">
