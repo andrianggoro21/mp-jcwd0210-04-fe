@@ -4,14 +4,12 @@ import {
   Image,
   Button,
   VStack,
-  Divider,
   AspectRatio,
   Input,
   HStack,
   Modal,
   ModalOverlay,
   ModalContent,
-  ModalHeader,
   ModalFooter,
   ModalBody,
   ModalCloseButton,
@@ -68,8 +66,9 @@ const Sidebar = () => {
     try {
       let formData = new FormData();
       formData.append("image", fieldImage);
-      const { data } = await axios.patch(
-        "http://localhost:8080/update_profile/1",
+      const { data } = await axios.post(
+        `${import.meta.env.VITE_APP_API_BASE_URL}/profile`,
+        // "http://localhost:8080/profile",
         formData
       );
       toast({
@@ -379,13 +378,14 @@ const Sidebar = () => {
                         bgColor={"yellow"}
                         w="30px"
                         h="30px"
+                        onClick={onOpen}
                         // bgColor="#D9D9D9"
                         // borderRadius="50%"
                       >
                         <Image
                           src={`${
                             import.meta.env.VITE_APP_API_IMAGE_URL
-                          }/profile/product_2023_10_19_logo ratan.png`}
+                          }/profile/update_profile_1700503150443-human.jpg`}
                           borderRadius={"50%"}
                           boxSize={"2em"}
                         />
