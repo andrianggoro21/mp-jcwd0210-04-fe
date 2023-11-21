@@ -18,7 +18,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { IconBox, IconLayoutDashboard } from "@tabler/icons-react";
 import { IconChevronRight, IconChevronLeft } from "@tabler/icons-react";
 import { BsBag, BsPersonCircle } from "react-icons/bs";
@@ -30,6 +30,7 @@ const Sidebar = () => {
   const [activeMenu, setActiveMenu] = useState("dash");
   const [showProductDropdown, setShowProductDropdown] = useState(false);
   // const [activeSubProduct, setActiveSubProduct] = useState("product-list");
+  const [profile, setProfile] = useState<any>([]);
 
   const handleUserClick = (user: string) => {
     setActiveUser(user);
@@ -86,6 +87,33 @@ const Sidebar = () => {
       setFieldImage("");
     }
   };
+
+  const getProfile = async () => {
+    try {
+      
+      const data = await axios.get(`http://localhost:8080/profile/profile`);
+      console.log(data?.data?.data[0]);
+      
+      setProfile(data?.data?.data)
+      // toast({
+      //   title: data?.message,
+      //   status: "error",
+      // });
+      // setFieldImage("");
+      // await onClose();
+    } catch (err) {
+      toast({
+        title: "get Error",
+        description: "File Too Large",
+        status: "warning",
+      });
+      // setFieldImage("");
+    }
+  };
+
+  useEffect(() => {
+    getProfile()
+  }, [setProfile]);
 
   return (
     <Box boxShadow="md" w="15%" h="100vh" bgColor="#ffffff">
@@ -384,8 +412,8 @@ const Sidebar = () => {
                       >
                         <Image
                           src={`${
-                            import.meta.env.VITE_APP_API_IMAGE_URL
-                          }/profile/update_profile_1700503150443-human.jpg`}
+                            import.meta.env.VITE_APP_IMAGE_URL
+                          }/update_profile/update_profile_1699861931073-baner2.jpg`}
                           borderRadius={"50%"}
                           boxSize={"2em"}
                         />
